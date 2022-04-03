@@ -1,7 +1,7 @@
 # Main file which needs to be run to start the game
 import pygame
 from settings import *  # From settings import everything
-from tiles import Tile
+from level import Level
 
 pygame.init()
 
@@ -13,7 +13,7 @@ screen = pygame.display.set_mode([screenWidth, screenHeight])
 done = False
 clock = pygame.time.Clock()
 
-tileTest = pygame.sprite.Group(Tile((100, 100), 200))
+level = Level(levelMap, screen)
 
 # Main game loop
 while not done:
@@ -22,7 +22,7 @@ while not done:
             done = True
 
     screen.fill('black')  # Set the background colour
-    tileTest.draw(screen)
+    level.run()  # When the main file is run the level is run
 
     clock.tick(60)  # Set the clock speed of the game
     pygame.display.flip()

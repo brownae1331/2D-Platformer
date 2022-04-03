@@ -14,7 +14,7 @@ levelMap = [
     '                           ',
     '            XX             ',
     '                    XXXXXXX',
-    '       XXX       XX        ',
+    ' P     XXX       XX        ',
     'XXXXXXX     XXXX           ',
 ]
 

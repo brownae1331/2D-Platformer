@@ -6,7 +6,7 @@ from level import Level
 pygame.init()
 
 # Set the size of the window that the game will played in
-# The variables screenWidth and screenHeight are from the settings file
+# The variables screenWidth and screenHeight are from the settings fil7e
 screen = pygame.display.set_mode([screenWidth, screenHeight])
 
 # Setting the contion for the game loop

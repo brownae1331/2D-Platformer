@@ -11,6 +11,12 @@ class Player(pygame.sprite.Sprite):
 
         # Player movement
         self.direction = pygame.math.Vector2(0, 0)
+        self.speed = 8
+        self.gravity = 0.8
+        self.jumpSpeed = -16
+
+        # Player status
+        self.onGround = False
 
     # This function get the input from the user and moves the player
     def getInput(self):
@@ -26,8 +32,15 @@ class Player(pygame.sprite.Sprite):
         else:
             self.direction.x = 0
 
+        # When the space bar is pressed the player jumps
+        if keys[pygame.K_SPACE] and self.onGround:
+            self.direction.y = self.jumpSpeed
+
+    def applyGravity(self):
+        # Gravity is applied to the direction of the player
+        self.direction.y += self.gravity
+        # The direction is added to the position of the player
+        self.rect.y += self.direction.y
+
     def update(self):
         self.getInput()
-        # When the arrow key is held the value of the direction keeps being added to the x value of the player making it move
-        # Multiple the direction by 8 so the player is faster. Could change in the future to vary the speed of the player while running
-        self.rect.x += self.direction.x * 8

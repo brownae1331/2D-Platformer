@@ -10,3 +10,7 @@ class Tile(pygame.sprite.Sprite):
         # Place the top left of the tile where the position is
         self.rect = self.image.get_rect(topleft=pos)
         self.image.fill('grey')  # Not permanent colour
+
+    # Keep the world shift to the x position of all tiles
+    def update(self, xShift):
+        self.rect.x += xShift

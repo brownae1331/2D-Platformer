@@ -6,8 +6,6 @@ import spritesheet
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos):  # Need to know the postion the player will be placed
         super().__init__()
-        self.image = self.animationList[0]
-        self.rect = self.image.get_rect(topleft=pos)
 
         # Player movement
         self.direction = pygame.math.Vector2(0, 0)
@@ -18,12 +16,16 @@ class Player(pygame.sprite.Sprite):
         # Player status
         self.onGround = False
 
-        # Animation
+        # Player Animation
+        self.status = 'Idle (32x32).png'
         self.lastUpdate = pygame.time.get_ticks()
         self.animationCooldown = 75
         self.frameIndex = 0
         self.animationList = []
         self.getAnimationAssest('Idle (32x32).png', 11)
+        self.image = self.animationList[0]
+
+        self.rect = self.image.get_rect(topleft=pos)
 
     # This function get the input from the user and moves the player
     def getInput(self):

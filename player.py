@@ -17,12 +17,11 @@ class Player(pygame.sprite.Sprite):
         self.onGround = False
 
         # Player Animation
-        self.status = 'Run (32x32).png'
-        self.animationSteps = 12
+        self.status = 'Idle (32x32).png'
+        self.animationSteps = 11  # The player will be in the Idle animation on first frame
         self.lastUpdate = pygame.time.get_ticks()
         self.animationCooldown = 75
         self.frameIndex = 0
-        self.animationList = []
         self.getAnimationAssest(self.status, self.animationSteps)
         self.image = self.animationList[0]
 
@@ -35,12 +34,18 @@ class Player(pygame.sprite.Sprite):
         # When the right arrow key is pressed
         if keys[pygame.K_RIGHT]:
             self.direction.x = 1
+            self.status = 'Run (32x32).png'
+            self.animationSteps = 12
         # When the left arrow key is pressed
         elif keys[pygame.K_LEFT]:
             self.direction.x = -1
+            self.status = 'Run (32x32).png'
+            self.animationSteps = 12
         # When none of the arrow keys are pressed
         else:
             self.direction.x = 0
+            self.status = 'Idle (32x32).png'
+            self.animationSteps = 11
 
         # When the space bar is pressed the player jumps
         if keys[pygame.K_SPACE] and self.onGround:
@@ -53,6 +58,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.direction.y
 
     def getAnimationAssest(self, status, animationSteps):
+        self.animationList = []
         spriteSheetImage = pygame.image.load(
             'Assests/Main Characters/Ninja Frog/' + status).convert_alpha()
         spriteSheet = spritesheet.SpriteSheet(spriteSheetImage)
@@ -73,4 +79,5 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         self.getInput()
+        self.getAnimationAssest(self.status, self.animationSteps)
         self.animation()

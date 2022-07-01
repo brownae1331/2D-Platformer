@@ -8,18 +8,18 @@ screen = pygame.display.set_mode([screenWidth, screenHeight])
 
 
 spriteSheetImage = pygame.image.load(
-    'Assests/Main Characters/Ninja Frog/Idle (32x32).png').convert_alpha()
+    'Assests/Enemies/Bat/Idle (46x30).png').convert_alpha()
 spriteSheet = spritesheet.SpriteSheet(spriteSheetImage)
 
 # Create animation list
 animationList = []
-animationSteps = 11
+animationSteps = 12
 lastUpdate = pygame.time.get_ticks()
 animationCooldown = 75
 frame = 0
 
 for i in range(animationSteps):
-    animationList.append(spriteSheet.getImage(i, 32, 32, 3, 'black'))
+    animationList.append(spriteSheet.getImage(i, 46, 30, 3, 'black'))
 
 
 done = False

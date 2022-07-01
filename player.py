@@ -1,12 +1,12 @@
 # This file contains all the code for the player
 import pygame
+import spritesheet
 
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos):  # Need to know the postion the player will be placed
         super().__init__()
-        self.image = pygame.Surface((32, 64))
-        self.image.fill('red')  # Not permanent colour
+        self.image = self.animationList[0]
         self.rect = self.image.get_rect(topleft=pos)
 
         # Player movement
@@ -17,6 +17,13 @@ class Player(pygame.sprite.Sprite):
 
         # Player status
         self.onGround = False
+
+        # Animation
+        self.lastUpdate = pygame.time.get_ticks()
+        self.animationCooldown = 75
+        self.frameIndex = 0
+        self.animationList = []
+        self.getAnimationAssest('Idle (32x32).png', 11)
 
     # This function get the input from the user and moves the player
     def getInput(self):
@@ -42,5 +49,23 @@ class Player(pygame.sprite.Sprite):
         # The direction is added to the position of the player
         self.rect.y += self.direction.y
 
+    def getAnimationAssest(self, status, animationSteps):
+        spriteSheetImage = pygame.image.load(
+            'Assests/Main Characters/Ninja Frog/' + status).convert_alpha()
+        spriteSheet = spritesheet.SpriteSheet(spriteSheetImage)
+
+        for i in range(animationSteps):
+            self.animationList.append(
+                spriteSheet.getImage(i, 32, 32, 3, 'black'))
+
+    def animation(self):
+        currentTime = pygame.time.get_ticks()
+        if currentTime - self.lastUpdate > self.animationCooldown:
+            self.frameIndex += 1
+            self.lastUpdate = currentTime
+            if self.frameIndex >= len(self.animationList):
+                self.frameIndex = 0
+
     def update(self):
         self.getInput()
+        self.animation()

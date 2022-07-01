@@ -15,7 +15,7 @@ levelMap = [
     '            XX             ',
     '                    XXXXXXX',
     ' P     XXX       XX        ',
-    'XXXXXXX     XXXX           ',
+    'XXXXXXXXXXXXXXXXXXXXXXXXXXX',
 ]
 
 tileSize = 64  # The size of the tiles

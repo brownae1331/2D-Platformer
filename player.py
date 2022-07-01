@@ -17,12 +17,13 @@ class Player(pygame.sprite.Sprite):
         self.onGround = False
 
         # Player Animation
-        self.status = 'Idle (32x32).png'
+        self.status = 'Run (32x32).png'
+        self.animationSteps = 12
         self.lastUpdate = pygame.time.get_ticks()
         self.animationCooldown = 75
         self.frameIndex = 0
         self.animationList = []
-        self.getAnimationAssest('Idle (32x32).png', 11)
+        self.getAnimationAssest(self.status, self.animationSteps)
         self.image = self.animationList[0]
 
         self.rect = self.image.get_rect(topleft=pos)
@@ -67,6 +68,8 @@ class Player(pygame.sprite.Sprite):
             self.lastUpdate = currentTime
             if self.frameIndex >= len(self.animationList):
                 self.frameIndex = 0
+
+        self.image = self.animationList[self.frameIndex]
 
     def update(self):
         self.getInput()

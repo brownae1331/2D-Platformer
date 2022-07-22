@@ -23,7 +23,7 @@ class Player(pygame.sprite.Sprite):
         self.animationCooldown = 75
         self.frameIndex = 0
         self.getAnimationAssest(self.status, self.animationSteps)
-        self.image = self.animationList[0]
+        self.image = self.animationList[self.frameIndex]
 
         self.rect = self.image.get_rect(topleft=pos)
 
@@ -69,10 +69,10 @@ class Player(pygame.sprite.Sprite):
 
     def animation(self):
         currentTime = pygame.time.get_ticks()
-        if currentTime - self.lastUpdate > self.animationCooldown:
+        if currentTime - self.lastUpdate >= self.animationCooldown:
             self.frameIndex += 1
             self.lastUpdate = currentTime
-            if self.frameIndex >= len(self.animationList):
+            if self.frameIndex >= self.animationSteps - 1:
                 self.frameIndex = 0
 
         self.image = self.animationList[self.frameIndex]

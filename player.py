@@ -48,7 +48,7 @@ class Player(pygame.sprite.Sprite):
             self.animationSteps = 11
 
         # When the space bar is pressed the player jumps
-        if keys[pygame.K_SPACE] and self.onGround:
+        if keys[pygame.K_SPACE] and self.onGround == True:
             self.direction.y = self.jumpSpeed
 
     def applyGravity(self):

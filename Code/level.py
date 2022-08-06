@@ -6,11 +6,12 @@ from settings import tileSize, screenWidth
 
 class Level:
     # The level needs the level data to know what it has to draw and it need the surface that it has to draw on
-    def __init__(self, levelData, surface):
+    def __init__(self, levelData, screen):
         # Set the attribute for the suface the level will be displayed on
-        self.displaySurface = surface
-        self.setupLevel(levelData)  # Set the attribute for the level data
+        self.screen = screen
         self.worldShift = 0
+
+        self.setupLevel(levelData)  # Set the attribute for the level data
 
     # This function is going to draw the level onto the screen
     def setupLevel(self, layout):
@@ -96,11 +97,11 @@ class Level:
 
         # Level tiles
         self.tiles.update(self.worldShift)
-        self.tiles.draw(self.displaySurface)
+        self.tiles.draw(self.screen)
         self.scrollX()
 
         # Player
         self.player.update()
         self.hrzCollision()
         self.vrtCollision()
-        self.player.draw(self.displaySurface)
+        self.player.draw(self.screen)

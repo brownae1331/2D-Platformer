@@ -8,17 +8,18 @@ from menu import Menu
 class Game():
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode([screenWidth, screenHeight])
+        self.display = pygame.Surface([screenWidth, screenHeight])
+        self.window = pygame.display.set_mode([screenWidth, screenHeight])
         self.clock = pygame.time.Clock()
 
         self.running = True
         self.playing = True
+        self.startKey = False
         self.setupLevel(levelMap)
 
         self.worldShift = 0
 
         self.currentMenu = Menu(self)
-        self.startKey = False
 
     def gameLoop(self):
         while self.playing:
@@ -26,21 +27,20 @@ class Game():
             if self.startKey:
                 self.playing = False
 
-            self.screen.fill('black')
+            self.display.fill('black')
 
             self.tiles.update(self.worldShift)
-            self.tiles.draw(self.screen)
+            self.tiles.draw(self.display)
             self.scrollX()
 
             self.player.update()
             self.hrzCollision()
             self.vrtCollision()
-            self.player.draw(self.screen)
+            self.player.draw(self.display)
 
             self.clock.tick(60)
-            pygame.display.flip()
-
-        pygame.quit()
+            self.window.blit(self.display, (0, 0))
+            pygame.display.update()
 
     def checkEvent(self):
         for event in pygame.event.get():

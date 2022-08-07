@@ -1,19 +1,56 @@
 import pygame
+from settings import *
 from player import Player
 from tiles import Tile
-from settings import tileSize, screenWidth
+from menu import Menu
 
 
-class Level:
-    # The level needs the level data to know what it has to draw and it need the surface that it has to draw on
-    def __init__(self, levelData, screen):
-        # Set the attribute for the suface the level will be displayed on
-        self.screen = screen
+class Game():
+    def __init__(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode([screenWidth, screenHeight])
+        self.clock = pygame.time.Clock()
+
+        self.running = True
+        self.playing = True
+        self.setupLevel(levelMap)
+
         self.worldShift = 0
 
-        self.setupLevel(levelData)  # Set the attribute for the level data
+        self.currentMenu = Menu(self)
+        self.startKey = False
+
+    def gameLoop(self):
+        while self.playing:
+            self.checkEvent()
+            if self.startKey:
+                self.playing = False
+
+            self.screen.fill('black')
+
+            self.tiles.update(self.worldShift)
+            self.tiles.draw(self.screen)
+            self.scrollX()
+
+            self.player.update()
+            self.hrzCollision()
+            self.vrtCollision()
+            self.player.draw(self.screen)
+
+            self.clock.tick(60)
+            pygame.display.flip()
+
+        pygame.quit()
+
+    def checkEvent(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+                self.playing = False
+                self.currentMenu.runDisplay = False
 
     # This function is going to draw the level onto the screen
+
     def setupLevel(self, layout):
         self.tiles = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
@@ -91,17 +128,3 @@ class Level:
         else:
             self.worldShift = 0
             player.speed = 8
-
-    # When the game starts this function is called
-    def run(self):
-
-        # Level tiles
-        self.tiles.update(self.worldShift)
-        self.tiles.draw(self.screen)
-        self.scrollX()
-
-        # Player
-        self.player.update()
-        self.hrzCollision()
-        self.vrtCollision()
-        self.player.draw(self.screen)

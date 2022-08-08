@@ -1,5 +1,6 @@
 import pygame
 from button import Button
+from settings import *
 
 
 class Menu:
@@ -20,26 +21,14 @@ class Menu:
         self.game.window.blit(self.game.display, (0, 0))
         pygame.display.update()
 
-    def displayMenu(self):
+    def menuLoop(self):
         self.runDisplay = True
         while self.runDisplay:
             self.game.checkEvent()
             self.mousePos = pygame.mouse.get_pos()
             self.game.display.fill('black')
 
-            for x in range(25):
-                for y in range(13):
-                    if x / 2 != 0 or x / 2 != 1:
-                        self.game.display.blit(
-                            self.background, (x * 64, y * 64))
-                    else:
-                        self.game.display.blit(pygame.transform.flip(
-                            self.background, False, True), (x * 64, y * 64))
-
-            for button in [self.playButton, self.quitButton]:
-                button.update(self.game.display)
-
-            self.game.display.blit(self.menuText, self.menuRect)
+            self.displayMenu()
             self.blitScreen()
             self.buttonPress()
 
@@ -53,3 +42,18 @@ class Menu:
                     self.game.running = False
                     self.game.playing = False
                     self.runDisplay = False
+
+    def displayMenu(self):
+        for x in range(25):
+            for y in range(13):
+                if x / 2 != 0 or x / 2 != 1:
+                    self.game.display.blit(
+                        self.background, (x * tileSize, y * tileSize))
+                else:
+                    self.game.display.blit(pygame.transform.flip(
+                        self.background, False, True), (x * tileSize, y * tileSize))
+
+            for button in [self.playButton, self.quitButton]:
+                button.update(self.game.display)
+
+            self.game.display.blit(self.menuText, self.menuRect)

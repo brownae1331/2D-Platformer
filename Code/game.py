@@ -3,6 +3,7 @@ from settings import *
 from player import Player
 from tiles import Tile
 from menu import Menu
+from leveleditor import LevelEditor
 
 
 class Game():
@@ -20,6 +21,7 @@ class Game():
         self.worldShift = 0
 
         self.currentMenu = Menu(self)
+        self.levelEditor = LevelEditor(self)
 
     def gameLoop(self):
         while self.playing:
@@ -38,6 +40,8 @@ class Game():
             self.vrtCollision()
             self.player.draw(self.display)
 
+            self.levelEditor.editorLoop()
+
             self.clock.tick(60)
             self.window.blit(self.display, (0, 0))
             pygame.display.update()
@@ -48,6 +52,11 @@ class Game():
                 self.running = False
                 self.playing = False
                 self.currentMenu.runDisplay = False
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
+            self.playing = False
+            self.levelEditor.runEditor = True
 
     # This function is going to draw the level onto the screen
 

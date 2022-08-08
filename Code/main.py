@@ -5,7 +5,7 @@ game = Game()
 
 while game.running:
 
-    game.currentMenu.displayMenu()
+    game.currentMenu.menuLoop()
     game.gameLoop()
 
 pygame.quit()

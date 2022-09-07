@@ -1,8 +1,9 @@
 import pygame
+from menu import Menu
 from settings import *
 from player import Player
 from tiles import Tile
-from menu import Menu
+from mainmenu import MainMenu
 from leveleditor import LevelEditor
 
 
@@ -20,7 +21,8 @@ class Game():
 
         self.worldShift = 0
 
-        self.currentMenu = Menu(self)
+        self.menu = Menu(self)
+        self.mainMenu = MainMenu(self)
         self.levelEditor = LevelEditor(self)
 
     def gameLoop(self):
@@ -49,12 +51,16 @@ class Game():
             if event.type == pygame.QUIT:
                 self.running = False
                 self.playing = False
-                self.currentMenu.runDisplay = False
+                self.menu.runDisplay = False
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_ESCAPE]:
+        if keys[pygame.K_l]:
             self.playing = False
             self.levelEditor.runEditor = True
+
+        elif keys[pygame.K_ESCAPE]:
+            self.playing = False
+            self.menu.runMenu = True
 
     # This function is going to draw the level onto the screen
 

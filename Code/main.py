@@ -7,5 +7,6 @@ while game.running:
 
     game.currentMenu.menuLoop()
     game.gameLoop()
+    game.levelEditor.editorLoop()
 
 pygame.quit()

@@ -17,7 +17,6 @@ class LevelEditor:
 
         while self.runEditor:
             self.game.checkEvent()
-            self.game.display.fill('black')
 
             self.drawGrid()
             self.blitScreen()

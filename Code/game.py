@@ -40,8 +40,6 @@ class Game():
             self.vrtCollision()
             self.player.draw(self.display)
 
-            self.levelEditor.editorLoop()
-
             self.clock.tick(60)
             self.window.blit(self.display, (0, 0))
             pygame.display.update()

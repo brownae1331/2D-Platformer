@@ -1,5 +1,5 @@
 import pygame
-from button import Button
+from button import ImageButton
 from settings import *
 
 
@@ -12,9 +12,9 @@ class MainMenu:
         self.menuText = self.text.render('Main Menu', True, '#000000')
         self.menuRect = self.menuText.get_rect(center=(800, 200))
 
-        self.playButton = Button(pygame.image.load(
+        self.playButton = ImageButton(pygame.image.load(
             'Assests/Menu/Buttons/Play.png'), (800, 400), 64, 64)
-        self.quitButton = Button(pygame.image.load(
+        self.quitButton = ImageButton(pygame.image.load(
             'Assests/Menu/Buttons/Close.png'), (800, 600), 64, 64)
 
     def blitScreen(self):

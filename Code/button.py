@@ -17,9 +17,9 @@ class ImageButton:
 
 class TextButton:
     def __init__(self, textInput, font, pos):
-        self.font = pygame.font.Font(font, 50)
+        self.font = pygame.font.Font(font, 25)
         self.textInput = textInput
-        self.text = self.font.render(self.textInput, True, '#000000')
+        self.text = self.font.render(self.textInput, True, 'white')
         self.rect = self.text.get_rect(center=pos)
 
     def update(self, screen):

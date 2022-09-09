@@ -15,8 +15,7 @@ class Game():
         self.clock = pygame.time.Clock()
 
         self.running = True
-        self.playing = True
-        self.startKey = False
+        self.playing = False
         self.setupLevel(levelMap)
 
         self.worldShift = 0
@@ -28,8 +27,6 @@ class Game():
     def gameLoop(self):
         while self.playing:
             self.checkEvent()
-            if self.startKey:
-                self.playing = False
 
             self.display.fill('black')
 
@@ -51,7 +48,7 @@ class Game():
             if event.type == pygame.QUIT:
                 self.running = False
                 self.playing = False
-                self.menu.runDisplay = False
+                self.mainMenu.runDisplay = False
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_l]:

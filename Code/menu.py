@@ -9,7 +9,7 @@ class Menu:
         self.runMenu = False
         self.menu = pygame.image.load('Assests/Menu/Menu.png')
         self.levelEditorButton = TextButton(
-            'Level Editor', 'Assests/Fonts/PixelColeco-4vJW.ttf', (screenWidth-25, 0))
+            'Level Editor', 'Assests/Fonts/PixelColeco-4vJW.ttf', (screenWidth-138, 80))
 
     def blitScreen(self):
         self.game.window.blit(self.game.display, (0, 0))

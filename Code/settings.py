@@ -5,17 +5,17 @@ screenHeight = 768
 # This is what the level is going to look like
 # The 'X' are tiles
 levelMap = [
-    '                           ',
-    '                           ',
-    '                           ',
-    '                           ',
-    '                           ',
-    '                           ',
-    '                           ',
-    '            XX             ',
-    ' P                  XXXXXXX',
-    '       XXX       XX        ',
-    'XXXXXXXXXXXXXXXXXXXXXXXXXXX',
+    '                                                                                   ',
+    '                                                                                   ',
+    '                                                                                   ',
+    '                                                                                   ',
+    '                                                                                   ',
+    '                                                                                   ',
+    '                                                                                   ',
+    '         E                                                                         ',
+    ' P                                                                                 ',
+    '                                                                                   ',
+    'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx',
 ]
 
 tileSize = 64  # The size of the tiles

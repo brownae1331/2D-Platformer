@@ -23,12 +23,14 @@ class Player(pygame.sprite.Sprite):
         self.animationCooldown = 75
         self.frameIndex = 0
         self.getAnimationAssest(self.status, self.animationSteps)
-        self.image = self.animationList[self.frameIndex]
 
-        self.rect = self.image.get_rect(midtop=pos)
+        self.image = self.animationList[self.frameIndex]
         self.mask = pygame.mask.from_surface(self.image)
+        self.rect = pygame.mask.Mask.get_rect(self.mask)
+        self.rect.midtop = pos
 
     # This function get the input from the user and moves the player
+
     def getInput(self):
         keys = pygame.key.get_pressed()
 

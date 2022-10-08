@@ -185,5 +185,11 @@ class Game():
                 enemy.direction.x = -1
 
     def playerEnemyCollision(self):
-        if pygame.sprite.spritecollide(self.player.sprite, self.enemy, False, pygame.sprite.collide_mask):
-            self.setupLevel(levelMap)
+        player = self.player.sprite
+        collision = pygame.sprite.spritecollide(
+            self.player.sprite, self.enemy, False, pygame.sprite.collide_mask)
+        for enemy in collision:
+            if player.rect.bottom < enemy.rect.top+25:
+                enemy.kill()
+            else:
+                self.setupLevel(levelMap)

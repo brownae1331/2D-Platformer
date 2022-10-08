@@ -19,12 +19,11 @@ class Enemy(pygame.sprite.Sprite):
         self.animationCooldown = 75
         self.frameIndex = 0
         self.getAnimationAssest(self.status, self.animationSteps)
+
         self.image = self.animationList[self.frameIndex]
-
-        self.rect = self.image.get_rect(midtop=pos)
         self.mask = pygame.mask.from_surface(self.image)
-
-        self.hit = False
+        self.rect = pygame.mask.Mask.get_rect(self.mask)
+        self.rect.midtop = pos
 
     def applyGravity(self):
         self.direction.y += self.gravity

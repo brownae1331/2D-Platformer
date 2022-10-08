@@ -189,5 +189,4 @@ class Game():
 
         for enemy in self.enemy.sprites():
             if enemy.rect.colliderect(player.rect):
-                if player.rect.bottom < enemy.rect.top:
-                    print("yo")
+                self.setupLevel(levelMap)

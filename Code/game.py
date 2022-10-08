@@ -43,6 +43,7 @@ class Game():
             self.enemy.update(self.worldShift)
             self.enemy.draw(self.display)
             self.moveEnemy()
+            self.playerEnemyCollision()
 
             self.clock.tick(60)
             self.window.blit(self.display, (0, 0))
@@ -69,7 +70,7 @@ class Game():
     def setupLevel(self, layout):
         self.tiles = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
-        self.enemy = pygame.sprite.GroupSingle()
+        self.enemy = pygame.sprite.Group()
 
         # enumerate give the value of whats in each row and give the index of each row
         for rowIndex, row in enumerate(layout):
@@ -94,44 +95,64 @@ class Game():
     # This function stops the player waling though walls
     def hrzCollision(self):
         player = self.player.sprite
-        enemy = self.enemy.sprite
 
-        for character in [player, enemy]:
-            character.rect.x += character.direction.x * character.speed
+        for enemy in self.enemy.sprites():
+            enemy.rect.x += enemy.direction.x * enemy.speed
 
             for sprite in self.tiles.sprites():
-                # If a sprite in the tiles group collides with the player than the following code happens
-                if sprite.rect.colliderect(character.rect):
-                    if character.direction.x < 0:  # If the player is moving to the left
-                        character.rect.left = sprite.rect.right
-                    elif character.direction.x > 0:  # if the player is moving to the right
-                        character.rect.right = sprite.rect.left
+                if sprite.rect.colliderect(enemy.rect):
+                    if enemy.direction.x < 0:
+                        enemy.rect.left = sprite.rect.right
+                    elif enemy.direction.x > 0:
+                        enemy.rect.right = sprite.rect.left
+
+        player.rect.x += player.direction.x * player.speed
+        for sprite in self.tiles.sprites():
+            if sprite.rect.colliderect(player.rect):
+                if player.direction.x < 0:
+                    player.direction.x = sprite.rect.right
+                elif player.direction.x > 0:
+                    player.rect.right = sprite.rect.lefts
 
     # This function stops the player from falling thougn the floor
     def vrtCollision(self):
         player = self.player.sprite
-        enemy = self.enemy.sprite
 
-        for character in [player, enemy]:
-            character.applyGravity()
+        for enemy in self.enemy.sprites():
+            enemy.applyGravity()
 
             for sprite in self.tiles.sprites():
-                # If the player collides with a tile
-                if sprite.rect.colliderect(character.rect):
-                    # If the player is falling / is standing on a tile
-                    if character.direction.y > 0:
-                        # The postion of the bottom of the player become the position of the top of the tile
-                        character.rect.bottom = sprite.rect.top
-                        character.direction.y = 0
-                        character.onGround = True
-                    # If the player is jumping / the player hits a tile on their head
-                    elif character.direction.y < 0:
-                        # The postion of the top of the player becomes the position of the bottom of the tile
-                        character.rect.top = sprite.rect.bottom
-                        character.direction.y = 0
+                if sprite.rect.colliderect(enemy.rect):
+                    if enemy.direction.y > 0:
+                        enemy.rect.bottom = sprite.rect.top
+                        enemy.direction.y = 0
+                        enemy.onGround = True
+                    elif enemy.direction.y < 0:
 
-                if character.onGround and character.direction.y < 0:
-                    character.onGround = False
+                        enemy.rect.top = sprite.rect.bottom
+                        enemy.direction.y = 0
+
+                if enemy.onGround and enemy.direction.y < 0:
+                    enemy.onGround = False
+
+        player.applyGravity()
+        for sprite in self.tiles.sprites():
+            # If the player collides with a tile
+            if sprite.rect.colliderect(player.rect):
+                # If the player is falling / is standing on a tile
+                if player.direction.y > 0:
+                    # The postion of the bottom of the player become the position of the top of the tile
+                    player.rect.bottom = sprite.rect.top
+                    player.direction.y = 0
+                    player.onGround = True
+                # If the player is jumping / the player hits a tile on their head
+                elif player.direction.y < 0:
+                    # The postion of the top of the player becomes the position of the bottom of the tile
+                    player.rect.top = sprite.rect.bottom
+                    player.direction.y = 0
+
+            if player.onGround and player.direction.y < 0:
+                player.onGround = False
 
     # This function scroll of the screen when the player get to the edge
     def scrollX(self):
@@ -156,17 +177,17 @@ class Game():
 
     def moveEnemy(self):
         player = self.player.sprite
-        enemy = self.enemy.sprite
 
-        if player.rect.x > enemy.rect.x:
-            enemy.direction.x = 1
-        elif player.rect.x < enemy.rect.x:
-            enemy.direction.x = -1
+        for enemy in self.enemy.sprites():
+            if player.rect.x > enemy.rect.x:
+                enemy.direction.x = 1
+            elif player.rect.x < enemy.rect.x:
+                enemy.direction.x = -1
 
     def playerEnemyCollision(self):
         player = self.player.sprite
-        enemy = self.enemy.sprite
 
-        if enemy.rect.colliderect(player.rect):
-            if player.direction.y > 0:
-                enemy.kill()
+        for enemy in self.enemy.sprites():
+            if enemy.rect.colliderect(player.rect):
+                if player.rect.bottom < enemy.rect.top:
+                    print("yo")

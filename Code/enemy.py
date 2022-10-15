@@ -1,6 +1,5 @@
 import pygame
 import spritesheet
-from player import Player
 
 
 class Enemy(pygame.sprite.Sprite):

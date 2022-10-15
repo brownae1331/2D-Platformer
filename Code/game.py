@@ -1,3 +1,4 @@
+from cgi import print_form
 import pygame
 from menu import Menu
 from settings import *
@@ -6,6 +7,7 @@ from tiles import Tile
 from mainmenu import MainMenu
 from leveleditor import LevelEditor
 from enemy import Enemy
+from powerup import PowerUp
 
 
 class Game():
@@ -33,7 +35,6 @@ class Game():
 
             self.tiles.update(self.worldShift)
             self.tiles.draw(self.display)
-            self.scrollX()
 
             self.player.update()
             self.hrzCollision()
@@ -44,6 +45,12 @@ class Game():
             self.enemy.draw(self.display)
             self.moveEnemy()
             self.playerEnemyCollision()
+
+            self.powerUp.update(self.worldShift)
+            self.powerUp.draw(self.display)
+            self.playerBoxCollision()
+
+            self.scrollX()
 
             self.clock.tick(60)
             self.window.blit(self.display, (0, 0))
@@ -71,6 +78,7 @@ class Game():
         self.tiles = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
         self.enemy = pygame.sprite.Group()
+        self.powerUp = pygame.sprite.Group()
 
         # enumerate give the value of whats in each row and give the index of each row
         for rowIndex, row in enumerate(layout):
@@ -91,6 +99,9 @@ class Game():
                 if col == 'E':
                     enemy = Enemy((x, y))
                     self.enemy.add(enemy)
+                if col == 'Z':
+                    powerUp = PowerUp((x, y), tileSize)
+                    self.powerUp.add(powerUp)
 
     # This function stops the player waling though walls
     def hrzCollision(self):
@@ -110,9 +121,9 @@ class Game():
         for sprite in self.tiles.sprites():
             if sprite.rect.colliderect(player.rect):
                 if player.direction.x < 0:
-                    player.direction.x = sprite.rect.right
+                    player.rect.left = sprite.rect.right
                 elif player.direction.x > 0:
-                    player.rect.right = sprite.rect.lefts
+                    player.rect.right = sprite.rect.left
 
     # This function stops the player from falling thougn the floor
     def vrtCollision(self):
@@ -193,3 +204,10 @@ class Game():
                 enemy.kill()
             else:
                 self.setupLevel(levelMap)
+
+    def playerBoxCollision(self):
+        player = self.player.sprite
+        collision = pygame.sprite.spritecollide(
+            player, self.powerUp, False, pygame.sprite.collide_mask)
+        for powerUp in collision:
+            powerUp.kill()

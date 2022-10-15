@@ -1,9 +1,9 @@
-from cmath import rect
 import pygame
 from settings import *
+from States.state import State
 
 
-class LevelEditor:
+class LevelEditor(State):
     def __init__(self, game):
         self.game = game
         self.runEditor = False

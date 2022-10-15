@@ -1,9 +1,10 @@
 import pygame
 from button import ImageButton
 from settings import *
+from States.state import State
 
 
-class MainMenu:
+class MainMenu(State):
     def __init__(self, game):
         self.game = game
         self.background = pygame.image.load('Assests/Background/Brown.png')
@@ -17,43 +18,29 @@ class MainMenu:
         self.quitButton = ImageButton(pygame.image.load(
             'Assests/Menu/Buttons/Close.png'), (800, 600), 64, 64)
 
-    def blitScreen(self):
-        self.game.window.blit(self.game.display, (0, 0))
-        pygame.display.update()
-
-    def menuLoop(self):
-        self.runDisplay = True
-        while self.runDisplay:
-            self.game.checkEvent()
-            self.mousePos = pygame.mouse.get_pos()
-            self.game.display.fill('black')
-
-            self.displayMenu()
-            self.blitScreen()
-            self.buttonPress()
+    def update(self):
+        self.mousePos = pygame.mouse.get_pos()
+        self.buttonPress()
 
     def buttonPress(self):
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.playButton.checkForInput(self.mousePos):
-                    self.game.playing = True
-                    self.runDisplay = False
+                    pass
                 elif self.quitButton.checkForInput(self.mousePos):
-                    self.game.running = False
-                    self.game.playing = False
-                    self.runDisplay = False
+                    pass
 
-    def displayMenu(self):
+    def render(self, display):
         for x in range(25):
             for y in range(13):
                 if x / 2 != 0 or x / 2 != 1:
-                    self.game.display.blit(
+                    display.blit(
                         self.background, (x * tileSize, y * tileSize))
                 else:
-                    self.game.display.blit(pygame.transform.flip(
+                    display.blit(pygame.transform.flip(
                         self.background, False, True), (x * tileSize, y * tileSize))
 
             for button in [self.playButton, self.quitButton]:
-                button.update(self.game.display)
+                button.update(display)
 
-            self.game.display.blit(self.menuText, self.menuRect)
+            display.blit(self.menuText, self.menuRect)

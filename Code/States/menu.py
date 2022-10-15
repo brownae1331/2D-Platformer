@@ -1,9 +1,10 @@
 import pygame
 from button import TextButton
 from settings import *
+from States.state import State
 
 
-class Menu:
+class Menu(State):
     def __init__(self, game):
         self.game = game
         self.runMenu = False

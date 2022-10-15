@@ -210,4 +210,12 @@ class Game():
         collision = pygame.sprite.spritecollide(
             player, self.powerUp, False, pygame.sprite.collide_mask)
         for powerUp in collision:
-            powerUp.kill()
+            if player.direction.y < 0:
+                player.rect.top = powerUp.rect.bottom
+                player.direction.y = 0
+                powerUp.kill()
+            else:
+                if player.direction.x < 0:
+                    player.rect.left = powerUp.rect.right
+                elif player.direction.x > 0:
+                    player.rect.right = powerUp.rect.left

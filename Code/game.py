@@ -16,8 +16,9 @@ class Game():
     def gameLoop(self):
         while self.running:
             self.checkEvent()
-            self.update()
             self.render()
+            self.update()
+            self.clock.tick(60)
 
     def checkEvent(self):
         for event in pygame.event.get():

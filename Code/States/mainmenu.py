@@ -2,6 +2,7 @@ import pygame
 from button import ImageButton
 from settings import *
 from States.state import State
+from States.level import Level
 
 
 class MainMenu(State):
@@ -26,9 +27,10 @@ class MainMenu(State):
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.playButton.checkForInput(self.mousePos):
-                    pass
+                    newState = Level(self.game)
+                    newState.enterState()
                 elif self.quitButton.checkForInput(self.mousePos):
-                    pass
+                    self.game.running = False
 
     def render(self, display):
         for x in range(25):

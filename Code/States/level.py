@@ -3,7 +3,6 @@ from States.menu import Menu
 from settings import *
 from player import Player
 from tiles import Tile
-from States.mainmenu import MainMenu
 from States.leveleditor import LevelEditor
 from States.state import State
 from enemy import Enemy
@@ -11,69 +10,35 @@ from powerup import PowerUp
 
 
 class Level(State):
-    def __init__(self):
-        pygame.init()
-        self.display = pygame.Surface([screenWidth, screenHeight])
-        self.window = pygame.display.set_mode([screenWidth, screenHeight])
-        self.clock = pygame.time.Clock()
-
-        self.running = True
-        self.playing = False
+    def __init__(self, game):
+        self.game = game
         self.setupLevel(levelMap)
-
         self.worldShift = 0
 
-        self.menu = Menu(self)
-        self.mainMenu = MainMenu(self)
-        self.levelEditor = LevelEditor(self)
+    def update(self):
+        self.tiles.update(self.worldShift)
 
-    def gameLoop(self):
-        while self.playing:
-            self.checkEvent()
+        self.player.update()
+        self.hrzCollision()
+        self.vrtCollision()
 
-            self.display.fill('black')
+        self.enemy.update(self.worldShift)
+        self.moveEnemy()
+        self.playerEnemyCollision()
 
-            self.tiles.update(self.worldShift)
-            self.tiles.draw(self.display)
+        self.powerUp.update(self.worldShift)
+        self.playerBoxCollision()
 
-            self.player.update()
-            self.hrzCollision()
-            self.vrtCollision()
-            self.player.draw(self.display)
+        self.scrollX()
 
-            self.enemy.update(self.worldShift)
-            self.enemy.draw(self.display)
-            self.moveEnemy()
-            self.playerEnemyCollision()
-
-            self.powerUp.update(self.worldShift)
-            self.powerUp.draw(self.display)
-            self.playerBoxCollision()
-
-            self.scrollX()
-
-            self.clock.tick(60)
-            self.window.blit(self.display, (0, 0))
-            pygame.display.update()
-
-    def checkEvent(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-                self.playing = False
-                self.mainMenu.runDisplay = False
-
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_l]:
-            self.playing = False
-            self.levelEditor.runEditor = True
-
-        elif keys[pygame.K_ESCAPE]:
-            self.playing = False
-            self.menu.runMenu = True
+    def render(self, display):
+        display.fill('black')
+        self.tiles.draw(display)
+        self.player.draw(display)
+        self.enemy.draw(display)
+        self.powerUp.draw(display)
 
     # This function is going to draw the level onto the screen
-
     def setupLevel(self, layout):
         self.tiles = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()

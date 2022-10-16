@@ -1,6 +1,5 @@
 # This file contains all the code for the player
 import pygame
-import spritesheet
 from animation import Animation
 
 
@@ -18,13 +17,13 @@ class Player(pygame.sprite.Sprite, Animation):
         self.onGround = False
 
         # Player Animation
-        self.status = 'Idle (32x32).png'
-        self.animationSteps = 11  # The player will be in the Idle animation on first frame
         self.lastUpdate = pygame.time.get_ticks()
         self.animationCooldown = 75
         self.frameIndex = 0
+        self.status = 'Idle (32x32).png'
+        self.animationSteps = 11  # The player will be in the Idle animation on first frame
         self.getAnimationAssests(
-            'Assets/Main Characters/Ninja Frog/', self.status, self.animationSteps)
+            'Assets/Main Characters/Ninja Frog/', self.status, self.animationSteps, 32, 32)
 
         self.image = self.animationList[self.frameIndex]
         self.mask = pygame.mask.from_surface(self.image)
@@ -65,5 +64,5 @@ class Player(pygame.sprite.Sprite, Animation):
     def update(self):
         self.getInput()
         self.getAnimationAssests(
-            'Assets/Main Characters/Ninja Frog/', self.status, self.animationSteps)
+            'Assets/Main Characters/Ninja Frog/', self.status, self.animationSteps, 32, 32)
         self.image = self.animation(self.animationSteps)

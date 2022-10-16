@@ -1,8 +1,8 @@
 import pygame
-import spritesheet
+from animation import Animation
 
 
-class Enemy(pygame.sprite.Sprite):
+class Enemy(pygame.sprite.Sprite, Animation):
     def __init__(self, pos):
         super().__init__()
 
@@ -12,12 +12,13 @@ class Enemy(pygame.sprite.Sprite):
 
         self.onGround = False
 
-        self.status = 'Idle-Run (44x30).png'
-        self.animationSteps = 10
         self.lastUpdate = pygame.time.get_ticks()
         self.animationCooldown = 75
         self.frameIndex = 0
-        self.getAnimationAssest(self.status, self.animationSteps)
+        self.status = 'Idle-Run (44x30).png'
+        self.animationSteps = 10
+        self.getAnimationAssests(
+            'Assets/Enemies/Slime/', self.status, self.animationSteps, 44, 30)
 
         self.image = self.animationList[self.frameIndex]
         self.mask = pygame.mask.from_surface(self.image)
@@ -28,27 +29,8 @@ class Enemy(pygame.sprite.Sprite):
         self.direction.y += self.gravity
         self.rect.y += self.direction.y
 
-    def getAnimationAssest(self, status, animationSteps):
-        self.animationList = []
-        spriteSheetImage = pygame.image.load(
-            'Assests/Enemies/Slime/' + status).convert_alpha()
-        spriteSheet = spritesheet.SpriteSheet(spriteSheetImage)
-
-        for i in range(animationSteps):
-            self.animationList.append(
-                spriteSheet.getImage(i, 44, 30, 3, 'black'))
-
-    def animation(self):
-        currentTime = pygame.time.get_ticks()
-        if currentTime - self.lastUpdate >= self.animationCooldown:
-            self.frameIndex += 1
-            self.lastUpdate = currentTime
-            if self.frameIndex >= self.animationSteps - 1:
-                self.frameIndex = 0
-
-        self.image = self.animationList[self.frameIndex]
-
     def update(self, XShift):
-        self.getAnimationAssest(self.status, self.animationSteps)
-        self.animation()
+        self.getAnimationAssests(
+            'Assets/Enemies/Slime/', self.status, self.animationSteps, 44, 30)
+        self.image = self.animation(self.animationSteps)
         self.rect.x += XShift

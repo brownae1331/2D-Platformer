@@ -14,12 +14,12 @@ class Animation:
         image.set_colorkey(color)
         return image
 
-    def getAnimationAssests(self, path, status, animationSteps):
+    def getAnimationAssests(self, path, status, animationSteps, width, heigth):
         self.animationList = []
         spriteSheetImage = pygame.image.load(path + status).convert_alpha()
         for i in range(animationSteps):
             self.animationList.append(self.spriteSheet(
-                spriteSheetImage, i, 32, 32, 3, 'black'))
+                spriteSheetImage, i, width, heigth, 3, 'black'))
 
     def animation(self, animationSteps):
         currentTime = pygame.time.get_ticks()

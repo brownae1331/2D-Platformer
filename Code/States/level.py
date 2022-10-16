@@ -1,5 +1,5 @@
 import pygame
-from States.menu import Menu
+from States.pausemenu import PauseMenu
 from settings import *
 from player import Player
 from tiles import Tile
@@ -30,6 +30,8 @@ class Level(State):
         self.playerBoxCollision()
 
         self.scrollX()
+
+        self.openMenu()
 
     def render(self, display):
         display.fill('black')
@@ -67,6 +69,22 @@ class Level(State):
                 if col == 'Z':
                     powerUp = PowerUp((x, y), tileSize)
                     self.powerUp.add(powerUp)
+
+    def moveEnemy(self):
+        player = self.player.sprite
+
+        for enemy in self.enemy.sprites():
+            if player.rect.x > enemy.rect.x:
+                enemy.direction.x = 1
+            elif player.rect.x < enemy.rect.x:
+                enemy.direction.x = -1
+
+    def openMenu(self):
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_ESCAPE]:
+            newState = PauseMenu(self.game)
+            newState.enterState()
 
     # This function stops the player waling though walls
     def hrzCollision(self):
@@ -130,36 +148,6 @@ class Level(State):
             if player.onGround and player.direction.y < 0:
                 player.onGround = False
 
-    # This function scroll of the screen when the player get to the edge
-    def scrollX(self):
-        player = self.player.sprite
-        playerX = player.rect.centerx
-        directionX = player.direction.x
-
-        # If the player is close to the left side of the screen and moving to the left
-        if playerX < screenWidth / 4 and directionX < 0:
-            # Make the player stop moving and move the world to the right
-            self.worldShift = 8
-            player.speed = 0
-
-        # If the player is close to the right side of the screen and moving to the right
-        elif playerX > screenWidth - (screenWidth / 4) and directionX > 0:
-            self.worldShift = -8
-            player.speed = 0
-
-        else:
-            self.worldShift = 0
-            player.speed = 8
-
-    def moveEnemy(self):
-        player = self.player.sprite
-
-        for enemy in self.enemy.sprites():
-            if player.rect.x > enemy.rect.x:
-                enemy.direction.x = 1
-            elif player.rect.x < enemy.rect.x:
-                enemy.direction.x = -1
-
     def playerEnemyCollision(self):
         player = self.player.sprite
         collision = pygame.sprite.spritecollide(
@@ -184,3 +172,24 @@ class Level(State):
                     player.rect.left = powerUp.rect.right
                 elif player.direction.x > 0:
                     player.rect.right = powerUp.rect.left
+
+    # This function scroll of the screen when the player get to the edge
+    def scrollX(self):
+        player = self.player.sprite
+        playerX = player.rect.centerx
+        directionX = player.direction.x
+
+        # If the player is close to the left side of the screen and moving to the left
+        if playerX < screenWidth / 4 and directionX < 0:
+            # Make the player stop moving and move the world to the right
+            self.worldShift = 8
+            player.speed = 0
+
+        # If the player is close to the right side of the screen and moving to the right
+        elif playerX > screenWidth - (screenWidth / 4) and directionX > 0:
+            self.worldShift = -8
+            player.speed = 0
+
+        else:
+            self.worldShift = 0
+            player.speed = 8

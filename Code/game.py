@@ -23,7 +23,7 @@ class Game():
     def checkEvent(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.playing = False
+                self.running = False
 
     def update(self):
         self.stateStack[-1].update()

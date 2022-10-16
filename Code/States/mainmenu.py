@@ -20,10 +20,10 @@ class MainMenu(State):
             'Assests/Menu/Buttons/Close.png'), (800, 600), 64, 64)
 
     def update(self):
-        self.mousePos = pygame.mouse.get_pos()
         self.buttonPress()
 
     def buttonPress(self):
+        self.mousePos = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.playButton.checkForInput(self.mousePos):

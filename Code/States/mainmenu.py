@@ -8,16 +8,16 @@ from States.level import Level
 class MainMenu(State):
     def __init__(self, game):
         self.game = game
-        self.background = pygame.image.load('Assests/Background/Brown.png')
-        self.text = pygame.font.Font("Assests/Fonts/PixelColeco-4vJW.ttf", 100)
+        self.background = pygame.image.load('Assets/Background/Brown.png')
+        self.text = pygame.font.Font("Assets/Fonts/PixelColeco-4vJW.ttf", 100)
 
         self.menuText = self.text.render('Main Menu', True, '#000000')
         self.menuRect = self.menuText.get_rect(center=(800, 200))
 
         self.playButton = ImageButton(pygame.image.load(
-            'Assests/Menu/Buttons/Play.png'), (800, 400), 64, 64)
+            'Assets/Menu/Buttons/Play.png'), (800, 400), 64, 64)
         self.quitButton = ImageButton(pygame.image.load(
-            'Assests/Menu/Buttons/Close.png'), (800, 600), 64, 64)
+            'Assets/Menu/Buttons/Close.png'), (800, 600), 64, 64)
 
     def update(self):
         self.buttonPress()

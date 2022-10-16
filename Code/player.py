@@ -1,9 +1,10 @@
 # This file contains all the code for the player
 import pygame
 import spritesheet
+from animation import Animation
 
 
-class Player(pygame.sprite.Sprite):
+class Player(pygame.sprite.Sprite, Animation):
     def __init__(self, pos):  # Need to know the postion the player will be placed
         super().__init__()
 
@@ -22,7 +23,8 @@ class Player(pygame.sprite.Sprite):
         self.lastUpdate = pygame.time.get_ticks()
         self.animationCooldown = 75
         self.frameIndex = 0
-        self.getAnimationAssest(self.status, self.animationSteps)
+        self.getAnimationAssests(
+            'Assets/Main Characters/Ninja Frog/', self.status, self.animationSteps)
 
         self.image = self.animationList[self.frameIndex]
         self.mask = pygame.mask.from_surface(self.image)
@@ -60,27 +62,8 @@ class Player(pygame.sprite.Sprite):
         # The direction is added to the position of the player
         self.rect.y += self.direction.y
 
-    def getAnimationAssest(self, status, animationSteps):
-        self.animationList = []
-        spriteSheetImage = pygame.image.load(
-            'Assests/Main Characters/Ninja Frog/' + status).convert_alpha()
-        spriteSheet = spritesheet.SpriteSheet(spriteSheetImage)
-
-        for i in range(animationSteps):
-            self.animationList.append(
-                spriteSheet.getImage(i, 32, 32, 3, 'black'))
-
-    def animation(self):
-        currentTime = pygame.time.get_ticks()
-        if currentTime - self.lastUpdate >= self.animationCooldown:
-            self.frameIndex += 1
-            self.lastUpdate = currentTime
-            if self.frameIndex >= self.animationSteps - 1:
-                self.frameIndex = 0
-
-        self.image = self.animationList[self.frameIndex]
-
     def update(self):
         self.getInput()
-        self.getAnimationAssest(self.status, self.animationSteps)
-        self.animation()
+        self.getAnimationAssests(
+            'Assets/Main Characters/Ninja Frog/', self.status, self.animationSteps)
+        self.image = self.animation(self.animationSteps)

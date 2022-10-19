@@ -1,3 +1,4 @@
+from math import fabs
 import pygame
 from settings import *
 from States.mainmenu import MainMenu
@@ -10,6 +11,8 @@ class Game():
         self.window = pygame.display.set_mode([screenWidth, screenHeight])
         self.clock = pygame.time.Clock()
         self.running = True
+        self.actions = {"left": False, "right": False,
+                        "space": False, "escape": False}
         self.stateStack = []
         self.loadStates()
 
@@ -24,6 +27,19 @@ class Game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    self.actions['left'] = True
+                if event.key == pygame.K_RIGHT:
+                    self.actions['right'] = True
+                if event.key == pygame.K_SPACE:
+                    self.actions['space'] = True
+                if event.key == pygame.K_ESCAPE:
+                    self.actions['escape'] = True
+
+    def resetKeys(self):
+        for i in self.actions:
+            self.actions[i] = False
 
     def update(self):
         self.stateStack[-1].update()

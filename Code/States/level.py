@@ -1,3 +1,4 @@
+from glob import escape
 import pygame
 from States.pausemenu import PauseMenu
 from settings import *
@@ -80,13 +81,13 @@ class Level(State):
                 enemy.direction.x = -1
 
     def openMenu(self):
-        keys = pygame.key.get_pressed()
-
-        if keys[pygame.K_ESCAPE]:
+        if self.game.actions["escape"]:
             newState = PauseMenu(self.game)
             newState.enterState()
+        self.game.resetKeys()
 
     # This function stops the player waling though walls
+
     def hrzCollision(self):
         player = self.player.sprite
 

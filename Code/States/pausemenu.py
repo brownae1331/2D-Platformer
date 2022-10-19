@@ -11,10 +11,21 @@ class PauseMenu(State):
         self.runMenu = False
         self.menu = pygame.image.load('Assets/Menu/Menu.png')
         self.levelEditorButton = TextButton(
-            'Level Editor', 'Assets/Fonts/PixelColeco-4vJW.ttf', (screenWidth-138, 80))
+            'Level Editor', 'Assets/Fonts/PixelColeco-4vJW.ttf', (screenWidth-135, 120))
+        self.exitButton = TextButton(
+            'Exit', 'Assets/Fonts/PixelColeco-4vJW.ttf', (screenWidth-135, 240))
+        self.settingsButton = TextButton(
+            'settings', 'Assets/Fonts/PixelColeco-4vJW.ttf', (screenWidth-135, 180))
+
+        self.text = pygame.font.Font("Assets/Fonts/PixelColeco-4vJW.ttf", 40)
+        self.menuText = self.text.render('Menu', True, 'white')
+        self.menuRect = self.menuText.get_rect(center=(screenWidth-135, 50))
 
     def update(self):
         self.buttonPress()
+        if self.game.actions["escape"]:
+            self.exitState()
+        self.game.resetKeys()
 
     def buttonPress(self):
         mousePos = pygame.mouse.get_pos()
@@ -26,5 +37,8 @@ class PauseMenu(State):
                     newState.enterState()
 
     def render(self, display):
-        display.blit(self.menu, (screenWidth - 277, 0))
+        display.blit(self.menu, (screenWidth - 270, 0))
+        display.blit(self.menuText, self.menuRect)
         self.levelEditorButton.update(display)
+        self.settingsButton.update(display)
+        self.exitButton.update(display)

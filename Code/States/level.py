@@ -1,4 +1,4 @@
-from glob import escape
+from ast import Pass
 import pygame
 from States.pausemenu import PauseMenu
 from settings import *
@@ -11,65 +11,57 @@ from powerup import PowerUp
 
 
 class Level(State):
-    def __init__(self, game):
+    def __init__(self, game, levelData):
         self.game = game
-        self.setupLevel(levelMap)
+
+        terrainLayout = importCSVLayout(levelData['terrain'])
+        self.terrainSprites = self.createTileGroup(terrainLayout, 'terrain')
+
         self.worldShift = 0
 
     def update(self):
-        self.tiles.update(self.worldShift)
+        pass
+        # self.tiles.update(self.worldShift)
 
-        self.player.update()
-        self.hrzCollision()
-        self.vrtCollision()
+        # self.player.update()
+        # self.hrzCollision()
+        # self.vrtCollision()
 
-        self.enemy.update(self.worldShift)
-        self.moveEnemy()
-        self.playerEnemyCollision()
+        # self.enemy.update(self.worldShift)
+        # self.moveEnemy()
+        # self.playerEnemyCollision()
 
-        self.powerUp.update(self.worldShift)
-        self.playerBoxCollision()
+        # self.powerUp.update(self.worldShift)
+        # self.playerBoxCollision()
 
-        self.scrollX()
+        # self.scrollX()
 
-        self.openMenu()
+        # self.openMenu()
 
     def render(self, display):
         display.fill('black')
-        self.tiles.draw(display)
-        self.player.draw(display)
-        self.enemy.draw(display)
-        self.powerUp.draw(display)
+        self.terrainSprites.draw(display)
+        # self.player.draw(display)
+        # self.enemy.draw(display)
+        # self.powerUp.draw(display)
 
-    # This function is going to draw the level onto the screen
-    def setupLevel(self, layout):
-        self.tiles = pygame.sprite.Group()
-        self.player = pygame.sprite.GroupSingle()
-        self.enemy = pygame.sprite.Group()
-        self.powerUp = pygame.sprite.Group()
+    def createTileGroup(self, layout, type):
+        spriteGroup = pygame.sprite.Group()
 
-        # enumerate give the value of whats in each row and give the index of each row
         for rowIndex, row in enumerate(layout):
-            # This  give the value of whats in each column and its index
-            for colIndex, col in enumerate(row):
-                # Find the coordinate where the tile needs to be placed
-                x = colIndex * tileSize
-                y = rowIndex * tileSize
+            for colIndex, val in enumerate(row):
+                if val != '-1':
+                    x = colIndex * tileSize
+                    y = rowIndex * tileSize
 
-                # If there is an X in the level data then a tile is place on the screen
-                if col == 'X':
-                    tile = Tile((x, y), tileSize)
-                    self.tiles.add(tile)
-                # If there is a P in the level data the plater will be placed there
-                if col == 'P':
-                    player = Player((x, y))
-                    self.player.add(player)
-                if col == 'E':
-                    enemy = Enemy((x, y))
-                    self.enemy.add(enemy)
-                if col == 'Z':
-                    powerUp = PowerUp((x, y), tileSize)
-                    self.powerUp.add(powerUp)
+                    if type == 'terrain':
+                        terrainTileList = importTilesets(
+                            'Assets/Terrain/Terrain.png')
+                        tileSurface = terrainTileList[int(val)]
+                        sprite = Tile((x, y), tileSize, tileSurface)
+                        spriteGroup.add(sprite)
+
+        return spriteGroup
 
     def moveEnemy(self):
         player = self.player.sprite

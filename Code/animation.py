@@ -22,7 +22,7 @@ class Animation:
             spriteSheetImage = pygame.image.load(path + status).convert_alpha()
         for i in range(animationSteps):
             self.animationList.append(self.spriteSheet(
-                spriteSheetImage, i, width, heigth, 1, 'black'))
+                spriteSheetImage, i, width, heigth, 2, 'black'))
 
     def animation(self, animationSteps):
         currentTime = pygame.time.get_ticks()

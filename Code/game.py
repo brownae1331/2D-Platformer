@@ -1,4 +1,3 @@
-from math import fabs
 import pygame
 from settings import *
 from States.mainmenu import MainMenu

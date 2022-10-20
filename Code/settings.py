@@ -43,7 +43,8 @@ def importTilesets(path):
         for col in range(tileNumX):
             x = col * tileSize
             y = row * tileSize
-            newSurface = pygame.Surface((tileSize, tileSize))
+            newSurface = pygame.Surface(
+                (tileSize, tileSize), flags=pygame.SRCALPHA)
             newSurface.blit(surface, (0, 0), pygame.Rect(
                 x, y, tileSize, tileSize))
             cutTiles.append(newSurface)

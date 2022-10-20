@@ -25,10 +25,17 @@ class Level(State):
         fruitLayout = importCSVLayout(levelData['fruits'])
         self.fruitSprites = self.createTileGroup(fruitLayout, 'fruits')
 
-        self.worldShift = 0
+        # enemies
+        enemyLayout = importCSVLayout(levelData['enemies'])
+        self.enemySprites = self.createTileGroup(enemyLayout, 'enemies')
+
+        self.worldShift = -2
 
     def update(self):
+        self.terrainSprites.update(self.worldShift)
+        self.crateSprites.update(self.worldShift)
         self.fruitSprites.update(self.worldShift)
+        self.enemySprites.update(self.worldShift)
         # self.tiles.update(self.worldShift)
 
         # self.player.update()
@@ -51,6 +58,7 @@ class Level(State):
         self.terrainSprites.draw(display)
         self.crateSprites.draw(display)
         self.fruitSprites.draw(display)
+        self.enemySprites.draw(display)
         # self.player.draw(display)
         # self.enemy.draw(display)
         # self.powerUp.draw(display)
@@ -76,13 +84,21 @@ class Level(State):
                     if type == 'fruits':
                         if val == '0':
                             sprite = Fruit(
-                                (x, y), tileSize, 'Assets/Items/Fruits/Bananas.png', 17, 64, 64)
+                                (x, y), tileSize, 'Assets/Items/Fruits/Bananas.png', 17, 32, 32)
                         if val == '1':
                             sprite = Fruit(
-                                (x, y), tileSize, 'Assets/Items/Fruits/Apple.png', 17, 64, 64)
+                                (x, y), tileSize, 'Assets/Items/Fruits/Apple.png', 17, 32, 32)
                         if val == '2':
                             sprite = Fruit(
-                                (x, y), tileSize, 'Assets/Items/Fruits/Pineapple.png', 17, 64, 64)
+                                (x, y), tileSize, 'Assets/Items/Fruits/Pineapple.png', 17, 32, 32)
+
+                    if type == 'enemies':
+                        if val == '0':
+                            sprite = Enemy(
+                                (x, y), tileSize, 'Assets/Enemies/Chicken/', 'Idle (32x34).png', 13, 32, 34)
+                        if val == '1':
+                            sprite = Enemy(
+                                (x, y), tileSize, 'Assets/Enemies/Slime/', 'Idle-Run (44x30).png', 10, 44, 30)
 
                     spriteGroup.add(sprite)
 

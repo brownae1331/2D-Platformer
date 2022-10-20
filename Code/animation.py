@@ -16,10 +16,13 @@ class Animation:
 
     def getAnimationAssests(self, path, status, animationSteps, width, heigth):
         self.animationList = []
-        spriteSheetImage = pygame.image.load(path + status).convert_alpha()
+        if status == 'None':
+            spriteSheetImage = pygame.image.load(path).convert_alpha()
+        else:
+            spriteSheetImage = pygame.image.load(path + status).convert_alpha()
         for i in range(animationSteps):
             self.animationList.append(self.spriteSheet(
-                spriteSheetImage, i, width, heigth, 3, 'black'))
+                spriteSheetImage, i, width, heigth, 1, 'black'))
 
     def animation(self, animationSteps):
         currentTime = pygame.time.get_ticks()

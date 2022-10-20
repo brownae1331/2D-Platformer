@@ -1,26 +1,34 @@
-from ast import Pass
+from venv import create
 import pygame
 from States.pausemenu import PauseMenu
 from settings import *
 from player import Player
-from tiles import Tile
+from tiles import StaticTile, Crate, Fruit
 from States.leveleditor import LevelEditor
 from States.state import State
 from enemy import Enemy
-from powerup import PowerUp
 
 
 class Level(State):
     def __init__(self, game, levelData):
         self.game = game
 
+        # terrain
         terrainLayout = importCSVLayout(levelData['terrain'])
         self.terrainSprites = self.createTileGroup(terrainLayout, 'terrain')
+
+        # creates
+        crateLayout = importCSVLayout(levelData['crates'])
+        self.crateSprites = self.createTileGroup(crateLayout, 'crates')
+
+        # fruits
+        fruitLayout = importCSVLayout(levelData['fruits'])
+        self.fruitSprites = self.createTileGroup(fruitLayout, 'fruits')
 
         self.worldShift = 0
 
     def update(self):
-        pass
+        self.fruitSprites.update(self.worldShift)
         # self.tiles.update(self.worldShift)
 
         # self.player.update()
@@ -41,6 +49,8 @@ class Level(State):
     def render(self, display):
         display.fill('black')
         self.terrainSprites.draw(display)
+        self.crateSprites.draw(display)
+        self.fruitSprites.draw(display)
         # self.player.draw(display)
         # self.enemy.draw(display)
         # self.powerUp.draw(display)
@@ -58,8 +68,23 @@ class Level(State):
                         terrainTileList = importTilesets(
                             'Assets/Terrain/Terrain.png')
                         tileSurface = terrainTileList[int(val)]
-                        sprite = Tile((x, y), tileSize, tileSurface)
-                        spriteGroup.add(sprite)
+                        sprite = StaticTile((x, y), tileSize, tileSurface)
+
+                    if type == 'crates':
+                        sprite = Crate((x, y), tileSize)
+
+                    if type == 'fruits':
+                        if val == '0':
+                            sprite = Fruit(
+                                (x, y), tileSize, 'Assets/Items/Fruits/Bananas.png', 17, 64, 64)
+                        if val == '1':
+                            sprite = Fruit(
+                                (x, y), tileSize, 'Assets/Items/Fruits/Apple.png', 17, 64, 64)
+                        if val == '2':
+                            sprite = Fruit(
+                                (x, y), tileSize, 'Assets/Items/Fruits/Pineapple.png', 17, 64, 64)
+
+                    spriteGroup.add(sprite)
 
         return spriteGroup
 

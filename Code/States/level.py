@@ -3,7 +3,7 @@ import pygame
 from States.pausemenu import PauseMenu
 from settings import *
 from player import Player
-from tiles import StaticTile, Crate, Fruit
+from tiles import StaticTile, Crate, Fruit, Checkpoint
 from States.leveleditor import LevelEditor
 from States.state import State
 from enemy import Enemy
@@ -29,6 +29,15 @@ class Level(State):
         enemyLayout = importCSVLayout(levelData['enemies'])
         self.enemySprites = self.createTileGroup(enemyLayout, 'enemies')
 
+        # checkpoints
+        checkpointLayout = importCSVLayout(levelData['checkpoints'])
+        self.checkpointSprites = self.createTileGroup(
+            checkpointLayout, 'checkpoints')
+        self.start = pygame.sprite.GroupSingle()
+        self.goal = pygame.sprite.GroupSingle()
+        self.player = pygame.sprite.GroupSingle()
+        self.createSingleGroup(checkpointLayout)
+
         self.worldShift = -2
 
     def update(self):
@@ -36,6 +45,9 @@ class Level(State):
         self.crateSprites.update(self.worldShift)
         self.fruitSprites.update(self.worldShift)
         self.enemySprites.update(self.worldShift)
+        self.checkpointSprites.update(self.worldShift)
+        self.start.update(self.worldShift)
+        self.goal.update(self.worldShift)
         # self.tiles.update(self.worldShift)
 
         # self.player.update()
@@ -59,6 +71,9 @@ class Level(State):
         self.crateSprites.draw(display)
         self.fruitSprites.draw(display)
         self.enemySprites.draw(display)
+        self.checkpointSprites.draw(display)
+        self.start.draw(display)
+        self.goal.draw(display)
         # self.player.draw(display)
         # self.enemy.draw(display)
         # self.powerUp.draw(display)
@@ -75,8 +90,8 @@ class Level(State):
                     if type == 'terrain':
                         terrainTileList = importTilesets(
                             'Assets/Terrain/Terrain.png')
-                        tileSurface = terrainTileList[int(val)]
-                        sprite = StaticTile((x, y), tileSize, tileSurface)
+                        tileImage = terrainTileList[int(val)]
+                        sprite = StaticTile((x, y), tileSize, tileImage)
 
                     if type == 'crates':
                         sprite = Crate((x, y), tileSize)
@@ -100,9 +115,35 @@ class Level(State):
                             sprite = Enemy(
                                 (x, y), tileSize, 'Assets/Enemies/Slime/', 'Idle-Run (44x30).png', 10, 44, 30)
 
+                    if type == 'checkpoints':
+                        if val == '1':
+                            checkpointImage = pygame.image.load(
+                                'Assets/Items/Checkpoints/Checkpoint/Checkpoint (No Flag).png')
+                            sprite = Checkpoint(
+                                (x, y), tileSize, checkpointImage)
+
                     spriteGroup.add(sprite)
 
         return spriteGroup
+
+    def createSingleGroup(self, layout):
+        for rowIndex, row in enumerate(layout):
+            for colIndex, val in enumerate(row):
+                if val != '-1':
+                    x = colIndex * tileSize
+                    y = rowIndex * tileSize
+                    if val == '0':
+                        startImage = pygame.image.load(
+                            'Assets/Items/Checkpoints/Start/Start (Idle).png')
+                        sprite = Checkpoint(
+                            (x, y), tileSize, startImage)
+                        self.start.add(sprite)
+                    if val == '2':
+                        goalImage = pygame.image.load(
+                            'Assets/Items/Checkpoints/End/End (Idle).png')
+                        sprite = Checkpoint(
+                            (x, y), tileSize, goalImage)
+                        self.goal.add(sprite)
 
     def moveEnemy(self):
         player = self.player.sprite

@@ -57,3 +57,10 @@ class Fruit(AnimatedTile):
         center_x = pos[0] + int(size / 2)
         center_y = pos[1] + int(size / 2)
         self.rect = self.image.get_rect(center=(center_x, center_y))
+
+
+class Checkpoint(StaticTile):
+    def __init__(self, pos, size, image):
+        super().__init__(pos, size, image)
+        offset_y = pos[1] + size
+        self.rect = self.image.get_rect(bottomleft=(pos[0], offset_y))

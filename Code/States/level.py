@@ -1,4 +1,3 @@
-from venv import create
 import pygame
 from States.pausemenu import PauseMenu
 from settings import *
@@ -12,6 +11,15 @@ from enemy import Enemy
 class Level(State):
     def __init__(self, game, levelData):
         self.game = game
+
+        # checkpoints and player
+        checkpointLayout = importCSVLayout(levelData['checkpoints'])
+        self.checkpointSprites = self.createTileGroup(
+            checkpointLayout, 'checkpoints')
+        self.start = pygame.sprite.GroupSingle()
+        self.player = pygame.sprite.GroupSingle()
+        self.goal = pygame.sprite.GroupSingle()
+        self.createSingleGroup(checkpointLayout)
 
         # terrain
         terrainLayout = importCSVLayout(levelData['terrain'])
@@ -29,16 +37,7 @@ class Level(State):
         enemyLayout = importCSVLayout(levelData['enemies'])
         self.enemySprites = self.createTileGroup(enemyLayout, 'enemies')
 
-        # checkpoints
-        checkpointLayout = importCSVLayout(levelData['checkpoints'])
-        self.checkpointSprites = self.createTileGroup(
-            checkpointLayout, 'checkpoints')
-        self.start = pygame.sprite.GroupSingle()
-        self.goal = pygame.sprite.GroupSingle()
-        self.player = pygame.sprite.GroupSingle()
-        self.createSingleGroup(checkpointLayout)
-
-        self.worldShift = -2
+        self.worldShift = 0
 
     def update(self):
         self.terrainSprites.update(self.worldShift)
@@ -48,35 +47,30 @@ class Level(State):
         self.checkpointSprites.update(self.worldShift)
         self.start.update(self.worldShift)
         self.goal.update(self.worldShift)
-        # self.tiles.update(self.worldShift)
 
-        # self.player.update()
-        # self.hrzCollision()
-        # self.vrtCollision()
+        self.player.update()
 
-        # self.enemy.update(self.worldShift)
+        self.hrzCollision()
+        self.vrtCollision()
+        self.scrollX()
+
         # self.moveEnemy()
         # self.playerEnemyCollision()
 
-        # self.powerUp.update(self.worldShift)
         # self.playerBoxCollision()
-
-        # self.scrollX()
 
         # self.openMenu()
 
     def render(self, display):
-        display.fill('black')
+        display.fill('grey')
         self.terrainSprites.draw(display)
         self.crateSprites.draw(display)
         self.fruitSprites.draw(display)
         self.enemySprites.draw(display)
         self.checkpointSprites.draw(display)
         self.start.draw(display)
+        self.player.draw(display)
         self.goal.draw(display)
-        # self.player.draw(display)
-        # self.enemy.draw(display)
-        # self.powerUp.draw(display)
 
     def createTileGroup(self, layout, type):
         spriteGroup = pygame.sprite.Group()
@@ -88,7 +82,7 @@ class Level(State):
                     y = rowIndex * tileSize
 
                     if type == 'terrain':
-                        terrainTileList = importTilesets(
+                        terrainTileList = import_cut_graphics(
                             'Assets/Terrain/Terrain.png')
                         tileImage = terrainTileList[int(val)]
                         sprite = StaticTile((x, y), tileSize, tileImage)
@@ -133,6 +127,11 @@ class Level(State):
                     x = colIndex * tileSize
                     y = rowIndex * tileSize
                     if val == '0':
+                        # player
+                        playerSprite = Player((x, y))
+                        self.player.add(playerSprite)
+
+                        # start goal
                         startImage = pygame.image.load(
                             'Assets/Items/Checkpoints/Start/Start (Idle).png')
                         sprite = Checkpoint(
@@ -164,19 +163,9 @@ class Level(State):
 
     def hrzCollision(self):
         player = self.player.sprite
-
-        for enemy in self.enemy.sprites():
-            enemy.rect.x += enemy.direction.x * enemy.speed
-
-            for sprite in self.tiles.sprites():
-                if sprite.rect.colliderect(enemy.rect):
-                    if enemy.direction.x < 0:
-                        enemy.rect.left = sprite.rect.right
-                    elif enemy.direction.x > 0:
-                        enemy.rect.right = sprite.rect.left
-
         player.rect.x += player.direction.x * player.speed
-        for sprite in self.tiles.sprites():
+
+        for sprite in self.terrainSprites.sprites() + self.crateSprites.sprites():
             if sprite.rect.colliderect(player.rect):
                 if player.direction.x < 0:
                     player.rect.left = sprite.rect.right
@@ -186,26 +175,9 @@ class Level(State):
     # This function stops the player from falling thougn the floor
     def vrtCollision(self):
         player = self.player.sprite
-
-        for enemy in self.enemy.sprites():
-            enemy.applyGravity()
-
-            for sprite in self.tiles.sprites():
-                if sprite.rect.colliderect(enemy.rect):
-                    if enemy.direction.y > 0:
-                        enemy.rect.bottom = sprite.rect.top
-                        enemy.direction.y = 0
-                        enemy.onGround = True
-                    elif enemy.direction.y < 0:
-
-                        enemy.rect.top = sprite.rect.bottom
-                        enemy.direction.y = 0
-
-                if enemy.onGround and enemy.direction.y < 0:
-                    enemy.onGround = False
-
         player.applyGravity()
-        for sprite in self.tiles.sprites():
+
+        for sprite in self.terrainSprites.sprites() + self.crateSprites.sprites():
             # If the player collides with a tile
             if sprite.rect.colliderect(player.rect):
                 # If the player is falling / is standing on a tile
@@ -223,15 +195,15 @@ class Level(State):
             if player.onGround and player.direction.y < 0:
                 player.onGround = False
 
-    def playerEnemyCollision(self):
-        player = self.player.sprite
-        collision = pygame.sprite.spritecollide(
-            self.player.sprite, self.enemy, False, pygame.sprite.collide_mask)
-        for enemy in collision:
-            if player.rect.bottom < enemy.rect.top+25:
-                enemy.kill()
-            else:
-                self.setupLevel(levelMap)
+    # def playerEnemyCollision(self):
+    #     player = self.player.sprite
+    #     collision = pygame.sprite.spritecollide(
+    #         self.player.sprite, self.enemy, False, pygame.sprite.collide_mask)
+    #     for enemy in collision:
+    #         if player.rect.bottom < enemy.rect.top+25:
+    #             enemy.kill()
+    #         else:
+    #             self.setupLevel(levelMap)
 
     def playerBoxCollision(self):
         player = self.player.sprite

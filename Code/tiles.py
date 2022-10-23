@@ -8,7 +8,7 @@ class Tile(pygame.sprite.Sprite):
     # The tile has to know its position on the screen and its size
     def __init__(self, pos, size):
         super().__init__()
-        self.image = pygame.Surface(pos)
+        self.image = pygame.Surface((size, size))
         self.rect = self.image.get_rect(topleft=pos)
 
     # Keep the world shift to the x position of all tiles
@@ -46,7 +46,8 @@ class AnimatedTile(Tile, Animation):
 
 class Crate(StaticTile):
     def __init__(self, pos, size):
-        super().__init__(pos, size, pygame.image.load('Assets/Items/Boxes/Box1/Idle.png'))
+        super().__init__(pos, size, pygame.image.load(
+            'Assets/Items/Boxes/Box1/Idle.png').convert_alpha())
         offset_y = pos[1] + size
         self.rect = self.image.get_rect(bottomleft=(pos[0], offset_y))
 

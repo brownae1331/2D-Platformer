@@ -1,6 +1,7 @@
 # This file contains all the code for the player
 import pygame
 from animation import Animation
+from settings import tileSize
 
 
 class Player(pygame.sprite.Sprite, Animation):
@@ -26,9 +27,7 @@ class Player(pygame.sprite.Sprite, Animation):
             'Assets/Main Characters/Ninja Frog/', self.status, self.animationSteps, 32, 32)
 
         self.image = self.animationList[self.frameIndex]
-        self.mask = pygame.mask.from_surface(self.image)
-        self.rect = pygame.mask.Mask.get_rect(self.mask)
-        self.rect.midtop = pos
+        self.rect = self.image.get_rect(topleft=pos)
 
     # This function get the input from the user and moves the player
 

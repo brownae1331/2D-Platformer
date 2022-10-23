@@ -5,22 +5,6 @@ import pygame
 screenWidth = 1536
 screenHeight = 704
 
-# This is what the level is going to look like
-# The 'X' are tiles
-levelMap = [
-    '                                                          ',
-    '                                                          ',
-    '                                                          ',
-    '                                                          ',
-    '                                                          ',
-    '                                                          ',
-    '            Z                                             ',
-    '                                                          ',
-    ' P               E                                        ',
-    '                                                          ',
-    'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-]
-
 tileSize = 64  # The size of the tiles
 
 
@@ -33,20 +17,20 @@ def importCSVLayout(path):
         return terrainMap
 
 
-def importTilesets(path):
+def import_cut_graphics(path):
     surface = pygame.image.load(path).convert_alpha()
-    tileNumX = int(surface.get_size()[0] / tileSize)
-    tileNumY = int(surface.get_size()[1] / tileSize)
+    tile_num_x = int(surface.get_size()[0] / tileSize)
+    tile_num_y = int(surface.get_size()[1] / tileSize)
 
-    cutTiles = []
-    for row in range(tileNumY):
-        for col in range(tileNumX):
+    cut_tiles = []
+    for row in range(tile_num_y):
+        for col in range(tile_num_x):
             x = col * tileSize
             y = row * tileSize
-            newSurface = pygame.Surface(
+            new_surf = pygame.Surface(
                 (tileSize, tileSize), flags=pygame.SRCALPHA)
-            newSurface.blit(surface, (0, 0), pygame.Rect(
+            new_surf.blit(surface, (0, 0), pygame.Rect(
                 x, y, tileSize, tileSize))
-            cutTiles.append(newSurface)
+            cut_tiles.append(new_surf)
 
-    return cutTiles
+    return cut_tiles

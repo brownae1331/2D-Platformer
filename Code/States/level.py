@@ -2,10 +2,10 @@ import pygame
 from States.pausemenu import PauseMenu
 from settings import *
 from player import Player
-from tiles import StaticTile, Crate, Fruit, Checkpoint
+from tiles import Tile, StaticTile, Crate, Fruit, Checkpoint
 from States.leveleditor import LevelEditor
 from States.state import State
-from enemy import Enemy
+from enemy import Enemy, Slime
 
 
 class Level(State):
@@ -37,6 +37,11 @@ class Level(State):
         enemyLayout = importCSVLayout(levelData['enemies'])
         self.enemySprites = self.createTileGroup(enemyLayout, 'enemies')
 
+        # constraints
+        constraintLayout = importCSVLayout(levelData['constraints'])
+        self.constrainSprites = self.createTileGroup(
+            constraintLayout, 'constraints')
+
         self.worldShift = 0
 
     def update(self):
@@ -44,9 +49,12 @@ class Level(State):
         self.crateSprites.update(self.worldShift)
         self.fruitSprites.update(self.worldShift)
         self.enemySprites.update(self.worldShift)
+        self.constrainSprites.update(self.worldShift)
         self.checkpointSprites.update(self.worldShift)
         self.start.update(self.worldShift)
         self.goal.update(self.worldShift)
+
+        self.enemyCollision()
 
         self.player.update()
 
@@ -106,8 +114,10 @@ class Level(State):
                             sprite = Enemy(
                                 (x, y), tileSize, 'Assets/Enemies/Chicken/', 'Idle (32x34).png', 13, 32, 34)
                         if val == '1':
-                            sprite = Enemy(
-                                (x, y), tileSize, 'Assets/Enemies/Slime/', 'Idle-Run (44x30).png', 10, 44, 30)
+                            sprite = Slime((x, y), tileSize)
+
+                    if type == 'constraints':
+                        sprite = Tile((x, y), tileSize)
 
                     if type == 'checkpoints':
                         if val == '1':
@@ -143,15 +153,6 @@ class Level(State):
                         sprite = Checkpoint(
                             (x, y), tileSize, goalImage)
                         self.goal.add(sprite)
-
-    def moveEnemy(self):
-        player = self.player.sprite
-
-        for enemy in self.enemy.sprites():
-            if player.rect.x > enemy.rect.x:
-                enemy.direction.x = 1
-            elif player.rect.x < enemy.rect.x:
-                enemy.direction.x = -1
 
     def openMenu(self):
         if self.game.actions["escape"]:
@@ -194,6 +195,11 @@ class Level(State):
 
             if player.onGround and player.direction.y < 0:
                 player.onGround = False
+
+    def enemyCollision(self):
+        for enemy in self.enemySprites.sprites():
+            if pygame.sprite.spritecollide(enemy, self.constrainSprites, False):
+                enemy.reverse()
 
     # def playerEnemyCollision(self):
     #     player = self.player.sprite

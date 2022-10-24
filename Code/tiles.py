@@ -1,5 +1,4 @@
 # This file holds the Tile class which will be used by the level class to place them
-from sys import path_hooks
 import pygame
 from animation import Animation
 

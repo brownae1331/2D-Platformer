@@ -43,6 +43,7 @@ class Level(State):
             constraintLayout, 'constraints')
 
         self.worldShift = 0
+        self.score = 0
 
     def update(self):
         self.terrainSprites.update(self.worldShift)
@@ -62,12 +63,9 @@ class Level(State):
         self.vrtCollision()
         self.scrollX()
 
-        # self.moveEnemy()
-        # self.playerEnemyCollision()
+        self.fruitCollision()
 
-        # self.playerBoxCollision()
-
-        # self.openMenu()
+        self.openMenu()
 
     def render(self, display):
         display.fill('grey')
@@ -79,6 +77,8 @@ class Level(State):
         self.start.draw(display)
         self.player.draw(display)
         self.goal.draw(display)
+
+        self.scoreDisplay(self.score, display)
 
     def createTileGroup(self, layout, type):
         spriteGroup = pygame.sprite.Group()
@@ -201,30 +201,18 @@ class Level(State):
             if pygame.sprite.spritecollide(enemy, self.constrainSprites, False):
                 enemy.reverse()
 
-    # def playerEnemyCollision(self):
-    #     player = self.player.sprite
-    #     collision = pygame.sprite.spritecollide(
-    #         self.player.sprite, self.enemy, False, pygame.sprite.collide_mask)
-    #     for enemy in collision:
-    #         if player.rect.bottom < enemy.rect.top+25:
-    #             enemy.kill()
-    #         else:
-    #             self.setupLevel(levelMap)
-
-    def playerBoxCollision(self):
+    def fruitCollision(self):
         player = self.player.sprite
         collision = pygame.sprite.spritecollide(
-            player, self.powerUp, False, pygame.sprite.collide_mask)
-        for powerUp in collision:
-            if player.direction.y < 0:
-                player.rect.top = powerUp.rect.bottom
-                player.direction.y = 0
-                powerUp.kill()
-            else:
-                if player.direction.x < 0:
-                    player.rect.left = powerUp.rect.right
-                elif player.direction.x > 0:
-                    player.rect.right = powerUp.rect.left
+            player, self.fruitSprites, True)
+        if collision:
+            self.score += 1
+
+    def scoreDisplay(self, score, display):
+        font = pygame.font.Font('Assets/Fonts/PixelColeco-4vJW.ttf', 30)
+        scoreImage = font.render(str(score), False, '#33323d')
+        scoreRect = scoreImage.get_rect(topleft=(50, 61))
+        display.blit(scoreImage, scoreRect)
 
     # This function scroll of the screen when the player get to the edge
     def scrollX(self):

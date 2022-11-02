@@ -12,6 +12,13 @@ class Level(State):
     def __init__(self, game, levelData):
         self.game = game
 
+        self.levelData = levelData
+        self.worldShift = 0
+
+        self.setupWorld(self.levelData)
+
+    def setupWorld(self, levelData):
+        self.score = 0
         # checkpoints and player
         checkpointLayout = importCSVLayout(levelData['checkpoints'])
         self.checkpointSprites = self.createTileGroup(
@@ -25,7 +32,7 @@ class Level(State):
         terrainLayout = importCSVLayout(levelData['terrain'])
         self.terrainSprites = self.createTileGroup(terrainLayout, 'terrain')
 
-        # creates
+        # crates
         crateLayout = importCSVLayout(levelData['crates'])
         self.crateSprites = self.createTileGroup(crateLayout, 'crates')
 
@@ -42,9 +49,6 @@ class Level(State):
         self.constrainSprites = self.createTileGroup(
             constraintLayout, 'constraints')
 
-        self.worldShift = 0
-        self.score = 0
-
     def update(self):
         self.terrainSprites.update(self.worldShift)
         self.crateSprites.update(self.worldShift)
@@ -56,14 +60,16 @@ class Level(State):
         self.goal.update(self.worldShift)
 
         self.enemyCollision()
+        self.fruitCollision()
+        self.playerEnemyCollision()
 
         self.player.update()
 
         self.hrzCollision()
         self.vrtCollision()
+        self.vrtCrateCollision()
         self.scrollX()
-
-        self.fruitCollision()
+        self.fallOffWorld()
 
         self.openMenu()
 
@@ -174,11 +180,12 @@ class Level(State):
                     player.rect.right = sprite.rect.left
 
     # This function stops the player from falling thougn the floor
+
     def vrtCollision(self):
         player = self.player.sprite
         player.applyGravity()
 
-        for sprite in self.terrainSprites.sprites() + self.crateSprites.sprites():
+        for sprite in self.terrainSprites.sprites():
             # If the player collides with a tile
             if sprite.rect.colliderect(player.rect):
                 # If the player is falling / is standing on a tile
@@ -196,6 +203,25 @@ class Level(State):
             if player.onGround and player.direction.y < 0:
                 player.onGround = False
 
+    def vrtCrateCollision(self):
+        player = self.player.sprite
+
+        for sprite in self.crateSprites.sprites():
+            # If the player collides with a tile
+            if sprite.rect.colliderect(player.rect):
+                # If the player is falling / is standing on a tile
+                if player.direction.y > 0:
+                    # The postion of the bottom of the player become the position of the top of the tile
+                    player.rect.bottom = sprite.rect.top
+                    player.direction.y = 0
+                    player.onGround = True
+                # If the player is jumping / the player hits a tile on their head
+                elif player.direction.y < 0:
+                    # The postion of the top of the player becomes the position of the bottom of the tile
+                    player.rect.top = sprite.rect.bottom
+                    player.direction.y = 0
+                    sprite.kill()
+
     def enemyCollision(self):
         for enemy in self.enemySprites.sprites():
             if pygame.sprite.spritecollide(enemy, self.constrainSprites, False):
@@ -207,6 +233,21 @@ class Level(State):
             player, self.fruitSprites, True)
         if collision:
             self.score += 1
+
+    def playerEnemyCollision(self):
+        player = self.player.sprite
+        enemyCollisions = pygame.sprite.spritecollide(
+            player, self.enemySprites, False)
+
+        if enemyCollisions:
+            for enemy in enemyCollisions:
+                if enemy.rect.top < player.rect.bottom < enemy.rect.centery and player.direction.y >= 0:
+                    enemy.kill()
+                else:
+                    self.killPlayer()
+
+    def killPlayer(self):
+        self.setupWorld(self.levelData)
 
     def scoreDisplay(self, score, display):
         font = pygame.font.Font('Assets/Fonts/PixelColeco-4vJW.ttf', 30)
@@ -234,3 +275,8 @@ class Level(State):
         else:
             self.worldShift = 0
             player.speed = 8
+
+    def fallOffWorld(self):
+        player = self.player.sprite
+        if player.rect.top > screenHeight:
+            self.killPlayer()

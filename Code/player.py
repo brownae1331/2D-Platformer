@@ -60,8 +60,14 @@ class Player(pygame.sprite.Sprite, Animation):
         # The direction is added to the position of the player
         self.rect.y += self.direction.y
 
+    def reverseImage(self):
+        if self.direction.x < 0:
+            self.image = pygame.transform.flip(self.image, True, False)
+            self.image.set_colorkey('black')
+
     def update(self):
         self.getInput()
         self.getAnimationAssests(
             'Assets/Main Characters/Ninja Frog/', self.status, self.animationSteps, 32, 32)
         self.image = self.animation(self.animationSteps)
+        self.reverseImage()

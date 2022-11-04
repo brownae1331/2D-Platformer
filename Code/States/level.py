@@ -6,6 +6,7 @@ from tiles import Tile, StaticTile, Crate, Fruit, Checkpoint
 from States.leveleditor import LevelEditor
 from States.state import State
 from enemy import Enemy, Slime
+from States.deathscreen import DeathScreen
 
 
 class Level(State):
@@ -247,7 +248,9 @@ class Level(State):
                     self.killPlayer()
 
     def killPlayer(self):
-        self.setupWorld(self.levelData)
+        self.exitState()
+        newState = DeathScreen(self.game)
+        newState.enterState()
 
     def scoreDisplay(self, score, display):
         font = pygame.font.Font('Assets/Fonts/PixelColeco-4vJW.ttf', 30)

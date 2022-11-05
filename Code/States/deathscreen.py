@@ -1,8 +1,6 @@
 import pygame
-from States.state import State
-from States.level import Level
 from button import ImageButton
-from gamedata import level1
+from States.state import State
 
 
 class DeathScreen(State):
@@ -23,8 +21,7 @@ class DeathScreen(State):
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.restartButton.checkForInput(self.mousePos):
-                    newState = Level(self.game, level1)
-                    newState.enterState()
+                    self.exitState()
                 elif self.levelsButton.checkForInput(self.mousePos):
                     self.exitState()
 

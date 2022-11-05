@@ -3,7 +3,6 @@ from States.pausemenu import PauseMenu
 from settings import *
 from player import Player
 from tiles import Tile, StaticTile, Crate, Fruit, Checkpoint
-from States.leveleditor import LevelEditor
 from States.state import State
 from enemy import Enemy, Slime
 from States.deathscreen import DeathScreen
@@ -12,6 +11,7 @@ from States.deathscreen import DeathScreen
 class Level(State):
     def __init__(self, game, levelData):
         self.game = game
+        self.time = 0
 
         self.levelData = levelData
         self.worldShift = 0
@@ -19,7 +19,6 @@ class Level(State):
         self.setupWorld(self.levelData)
 
     def setupWorld(self, levelData):
-        self.score = 0
         # checkpoints and player
         checkpointLayout = importCSVLayout(levelData['checkpoints'])
         self.checkpointSprites = self.createTileGroup(
@@ -50,7 +49,12 @@ class Level(State):
         self.constrainSprites = self.createTileGroup(
             constraintLayout, 'constraints')
 
+        self.score = 0
+        self.startTime = pygame.time.get_ticks()
+
     def update(self):
+        self.time = pygame.time.get_ticks()
+
         self.terrainSprites.update(self.worldShift)
         self.crateSprites.update(self.worldShift)
         self.fruitSprites.update(self.worldShift)
@@ -85,7 +89,8 @@ class Level(State):
         self.player.draw(display)
         self.goal.draw(display)
 
-        self.scoreDisplay(self.score, display)
+        self.displayScore(self.score, display)
+        self.displayTimer(display)
 
     def createTileGroup(self, layout, type):
         spriteGroup = pygame.sprite.Group()
@@ -145,7 +150,7 @@ class Level(State):
                     y = rowIndex * tileSize
                     if val == '0':
                         # player
-                        playerSprite = Player((x, y))
+                        playerSprite = Player((x, y), self.game)
                         self.player.add(playerSprite)
 
                         # start goal
@@ -252,11 +257,22 @@ class Level(State):
         newState = DeathScreen(self.game)
         newState.enterState()
 
-    def scoreDisplay(self, score, display):
+    def displayScore(self, score, display):
         font = pygame.font.Font('Assets/Fonts/PixelColeco-4vJW.ttf', 30)
         scoreImage = font.render(str(score), False, '#33323d')
         scoreRect = scoreImage.get_rect(topleft=(50, 61))
         display.blit(scoreImage, scoreRect)
+
+    def displayTimer(self, display):
+        self.gameTime = self.time - self.startTime
+        seconds = int((self.gameTime // 1000) % 60)
+        minutes = int(seconds // 60)
+
+        font = pygame.font.Font('Assets/Fonts/PixelColeco-4vJW.ttf', 30)
+        timerImage = font.render((str(minutes) + ':' + str(
+            seconds)), False, '#33323d')
+        timerRect = timerImage.get_rect(topright=(screenWidth - 50, 61))
+        display.blit(timerImage, timerRect)
 
     # This function scroll of the screen when the player get to the edge
     def scrollX(self):

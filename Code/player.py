@@ -1,12 +1,14 @@
 # This file contains all the code for the player
 import pygame
+import random
 from animation import Animation
 from settings import tileSize
 
 
 class Player(pygame.sprite.Sprite, Animation):
-    def __init__(self, pos):  # Need to know the postion the player will be placed
+    def __init__(self, pos, game):  # Need to know the postion the player will be placed
         super().__init__()
+        self.game = game
 
         # Player movement
         self.direction = pygame.math.Vector2(0, 0)
@@ -25,6 +27,9 @@ class Player(pygame.sprite.Sprite, Animation):
         self.animationSteps = 11  # The player will be in the Idle animation on first frame
         self.getAnimationAssests(
             'Assets/Main Characters/Ninja Frog/', self.status, self.animationSteps, 32, 32)
+
+        # Power Ups
+        self.isInvincible = False
 
         self.image = self.animationList[self.frameIndex]
         self.rect = self.image.get_rect(topleft=pos)
@@ -64,6 +69,11 @@ class Player(pygame.sprite.Sprite, Animation):
         if self.direction.x < 0:
             self.image = pygame.transform.flip(self.image, True, False)
             self.image.set_colorkey('black')
+
+    def powerUp(self):
+        powerUpNum = random.rnd(1, 1)
+        if powerUpNum == 1:
+            pass
 
     def update(self):
         self.getInput()

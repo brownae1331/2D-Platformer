@@ -227,6 +227,7 @@ class Level(State):
                     player.rect.top = sprite.rect.bottom
                     player.direction.y = 0
                     sprite.kill()
+                    player.powerUp()
 
     def enemyCollision(self):
         for enemy in self.enemySprites.sprites():
@@ -250,7 +251,8 @@ class Level(State):
                 if enemy.rect.top < player.rect.bottom < enemy.rect.centery and player.direction.y >= 0:
                     enemy.kill()
                 else:
-                    self.killPlayer()
+                    if player.isInvincible == False:
+                        self.killPlayer()
 
     def killPlayer(self):
         self.exitState()

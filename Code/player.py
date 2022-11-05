@@ -9,6 +9,7 @@ class Player(pygame.sprite.Sprite, Animation):
     def __init__(self, pos, game):  # Need to know the postion the player will be placed
         super().__init__()
         self.game = game
+        self.time = pygame.time.get_ticks()
 
         # Player movement
         self.direction = pygame.math.Vector2(0, 0)
@@ -29,6 +30,7 @@ class Player(pygame.sprite.Sprite, Animation):
             'Assets/Main Characters/Ninja Frog/', self.status, self.animationSteps, 32, 32)
 
         # Power Ups
+        self.startTime = 0
         self.isInvincible = False
 
         self.image = self.animationList[self.frameIndex]
@@ -70,14 +72,25 @@ class Player(pygame.sprite.Sprite, Animation):
             self.image = pygame.transform.flip(self.image, True, False)
             self.image.set_colorkey('black')
 
+    def Invincible(self):
+        if self.isInvincible:
+            if self.time - self.startTime > 5000:
+                self.isInvincible = False
+        print(f'time:{self.time}, startTime{self.startTime}')
+
     def powerUp(self):
-        powerUpNum = random.rnd(1, 1)
+        powerUpNum = random.randint(1, 1)
         if powerUpNum == 1:
-            pass
+            self.startTime = 0
+            self.startTime = pygame.time.get_ticks()
+            self.isInvincible = True
+            self.Invincible()
 
     def update(self):
+        self.time = pygame.time.get_ticks()
         self.getInput()
         self.getAnimationAssests(
             'Assets/Main Characters/Ninja Frog/', self.status, self.animationSteps, 32, 32)
         self.image = self.animation(self.animationSteps)
         self.reverseImage()
+        self.Invincible()

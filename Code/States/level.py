@@ -98,6 +98,7 @@ class Level(State):
         self.displayScore(self.score, display)
         self.displayTimer(display)
         self.powerUpTimer(display)
+        self.powerUpIcon(display)
 
     def createTileGroup(self, layout, type):
         spriteGroup = pygame.sprite.Group()
@@ -293,13 +294,33 @@ class Level(State):
 
     def powerUpTimer(self, display):
         player = self.player.sprite
-
         if player.isInvincible or player.runDoubleJump or player.runBullets:
             seconds = (player.time - player.startTime) // 1000
             font = pygame.font.Font('Assets/Fonts/PixelColeco-4vJW.ttf', 30)
             timerImage = font.render(str(10 - seconds), False, '#b08f26')
             timerRect = timerImage.get_rect(topright=(screenWidth - 50, 100))
             display.blit(timerImage, timerRect)
+
+    def powerUpIcon(self, display):
+        player = self.player.sprite
+        if player.isInvincible:
+            invincibleImage = pygame.image.load(
+                'Assets/PowerUps/Invincible.png').convert_alpha()
+            invincibleRect = invincibleImage.get_rect(
+                topright=(screenWidth - 90, 100))
+            display.blit(invincibleImage, invincibleRect)
+        elif player.runDoubleJump:
+            jumpImage = pygame.image.load(
+                'Assets/PowerUps/DoubleJump.png').convert_alpha()
+            jumpRect = jumpImage.get_rect(
+                topright=(screenWidth - 90, 100))
+            display.blit(jumpImage, jumpRect)
+        elif player.runBullets:
+            bulletImage = pygame.image.load(
+                'Assets/PowerUps/Bullet.png').convert_alpha()
+            bulletRect = bulletImage.get_rect(
+                topright=(screenWidth - 90, 100))
+            display.blit(bulletImage, bulletRect)
 
     def createBullet(self, actions):
         player = self.player.sprite

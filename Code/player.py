@@ -98,7 +98,7 @@ class Player(pygame.sprite.Sprite, Animation):
                     self.runBullets = False
 
     def powerUp(self):
-        powerUpNum = random.randint(1, 3)
+        powerUpNum = random.randint(3, 3)
         self.startTime = 0
         self.startTime = pygame.time.get_ticks()
         if powerUpNum == 1:

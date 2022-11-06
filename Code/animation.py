@@ -25,11 +25,14 @@ class Animation:
                 spriteSheetImage, i, width, heigth, 2, 'black'))
 
     def animation(self, animationSteps):
-        currentTime = pygame.time.get_ticks()
-        if currentTime - self.lastUpdate >= self.animationCooldown:
-            self.frameIndex += 1
-            self.lastUpdate = currentTime
-            if self.frameIndex >= animationSteps - 1:
-                self.frameIndex = 0
+        if animationSteps == 1:
+            return self.animationList[0]
+        else:
+            currentTime = pygame.time.get_ticks()
+            if currentTime - self.lastUpdate >= self.animationCooldown:
+                self.frameIndex += 1
+                self.lastUpdate = currentTime
+                if self.frameIndex >= animationSteps - 1:
+                    self.frameIndex = 0
 
-        return self.animationList[self.frameIndex]
+            return self.animationList[self.frameIndex]

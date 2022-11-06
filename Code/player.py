@@ -46,23 +46,31 @@ class Player(pygame.sprite.Sprite, Animation):
         # When the right arrow key is pressed
         if keys[pygame.K_RIGHT]:
             self.direction.x = 1
-            self.status = 'Run (32x32).png'
-            self.animationSteps = 12
         # When the left arrow key is pressed
         elif keys[pygame.K_LEFT]:
             self.direction.x = -1
-            self.status = 'Run (32x32).png'
-            self.animationSteps = 12
         # When none of the arrow keys are pressed
         else:
             self.direction.x = 0
-            self.status = 'Idle (32x32).png'
-            self.animationSteps = 11
 
         # When the space bar is pressed the player jumps
         if (keys[pygame.K_SPACE] and self.onGround == True) or (keys[pygame.K_SPACE] and self.runDoubleJump == True and self.jumps == 1 and self.direction.y > 0):
             self.direction.y = self.jumpSpeed
             self.jumps += 1
+
+    def getStatus(self):
+        if self.direction.y > 0 and self.onGround == False:
+            self.status = 'Fall (32x32).png'
+            self.animationSteps = 1
+        elif self.direction.y < 0 and self.onGround == False:
+            self.status = 'Jump (32x32).png'
+            self.animationSteps = 1
+        elif (self.direction.x == 1 or self.direction.x == -1) and self.onGround == True:
+            self.status = 'Run (32x32).png'
+            self.animationSteps = 12
+        else:
+            self.status = 'Idle (32x32).png'
+            self.animationSteps = 11
 
     def applyGravity(self):
         # Gravity is applied to the direction of the player
@@ -96,6 +104,7 @@ class Player(pygame.sprite.Sprite, Animation):
     def update(self):
         self.time = pygame.time.get_ticks()
         self.getInput()
+        self.getStatus()
         self.getAnimationAssests(
             'Assets/Main Characters/Ninja Frog/', self.status, self.animationSteps, 32, 32)
         self.image = self.animation(self.animationSteps)

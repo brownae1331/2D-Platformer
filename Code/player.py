@@ -98,15 +98,21 @@ class Player(pygame.sprite.Sprite, Animation):
                     self.runBullets = False
 
     def powerUp(self):
-        powerUpNum = random.randint(3, 3)
+        powerUpNum = random.randint(1, 3)
         self.startTime = 0
         self.startTime = pygame.time.get_ticks()
         if powerUpNum == 1:
             self.isInvincible = True
+            self.runDoubleJump = False
+            self.runBullets = False
         elif powerUpNum == 2:
             self.runDoubleJump = True
+            self.isInvincible = False
+            self.runBullets = False
         elif powerUpNum == 3:
             self.runBullets = True
+            self.isInvincible = False
+            self.runDoubleJump = False
 
     def update(self):
         self.time = pygame.time.get_ticks()

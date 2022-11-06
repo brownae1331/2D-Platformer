@@ -1,11 +1,12 @@
 import pygame
+from States.state import State
 from States.pausemenu import PauseMenu
+from States.deathscreen import DeathScreen
+from States.winscreen import WinScreen
 from settings import *
 from player import Player
-from tiles import Tile, StaticTile, Crate, Fruit, Checkpoint, Bullet
-from States.state import State
 from enemy import Enemy, Slime
-from States.deathscreen import DeathScreen
+from tiles import Tile, StaticTile, Crate, Fruit, Checkpoint, Bullet
 
 
 class Level(State):
@@ -74,6 +75,7 @@ class Level(State):
         self.player.update()
         self.createBullet(actions)
         self.bulletCollision()
+        self.goalCollision()
 
         self.hrzCollision()
         self.vrtCollision()
@@ -181,12 +183,11 @@ class Level(State):
         self.game.resetKeys()
 
     # This function stops the player waling though walls
-
     def hrzCollision(self):
         player = self.player.sprite
         player.rect.x += player.direction.x * player.speed
 
-        for sprite in self.terrainSprites.sprites() + self.crateSprites.sprites():
+        for sprite in self.terrainSprites.sprites() + self.crateSprites.sprites() + self.goal.sprites():
             if sprite.rect.colliderect(player.rect):
                 if player.direction.x < 0:
                     player.rect.left = sprite.rect.right
@@ -194,12 +195,11 @@ class Level(State):
                     player.rect.right = sprite.rect.left
 
     # This function stops the player from falling thougn the floor
-
     def vrtCollision(self):
         player = self.player.sprite
         player.applyGravity()
 
-        for sprite in self.terrainSprites.sprites():
+        for sprite in self.terrainSprites.sprites() + self.goal.sprites():
             # If the player collides with a tile
             if sprite.rect.colliderect(player.rect):
                 # If the player is falling / is standing on a tile
@@ -263,6 +263,13 @@ class Level(State):
                 else:
                     if player.isInvincible == False:
                         self.killPlayer()
+
+    def goalCollision(self):
+        player = self.player.sprite
+        if pygame.sprite.spritecollide(player, self.goal, False):
+            self.exitState()
+            newState = WinScreen(self.game)
+            newState.enterState()
 
     def bulletCollision(self):
         for bullet in self.bulletSprites.sprites():

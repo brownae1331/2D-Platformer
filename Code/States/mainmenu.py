@@ -3,6 +3,7 @@ from button import ImageButton
 from settings import *
 from States.state import State
 from States.level import Level
+from States.levelselect import LevelSelect
 from gamedata import level1
 
 
@@ -24,7 +25,7 @@ class MainMenu(State):
         self.mousePos = pygame.mouse.get_pos()
         if actions['mouse']:
             if self.playButton.checkForInput(self.mousePos):
-                newState = Level(self.game, level1)
+                newState = LevelSelect(self.game)
                 newState.enterState()
             elif self.quitButton.checkForInput(self.mousePos):
                 self.game.running = False
@@ -40,7 +41,7 @@ class MainMenu(State):
                     display.blit(pygame.transform.flip(
                         self.background, False, True), (x * tileSize, y * tileSize))
 
-            for button in [self.playButton, self.quitButton]:
-                button.update(display)
+        for button in [self.playButton, self.quitButton]:
+            button.update(display)
 
-            display.blit(self.menuText, self.menuRect)
+        display.blit(self.menuText, self.menuRect)

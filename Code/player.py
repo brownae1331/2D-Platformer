@@ -2,7 +2,7 @@
 import pygame
 import random
 from animation import Animation
-from settings import tileSize
+from settings import *
 
 
 class Player(pygame.sprite.Sprite, Animation):
@@ -32,6 +32,8 @@ class Player(pygame.sprite.Sprite, Animation):
         # Power Ups
         self.startTime = 0
         self.isInvincible = False
+        self.runDoubleJump = False
+        self.jumps = 0
 
         self.image = self.animationList[self.frameIndex]
         self.rect = self.image.get_rect(topleft=pos)
@@ -58,8 +60,9 @@ class Player(pygame.sprite.Sprite, Animation):
             self.animationSteps = 11
 
         # When the space bar is pressed the player jumps
-        if keys[pygame.K_SPACE] and self.onGround == True:
+        if (keys[pygame.K_SPACE] and self.onGround == True) or (keys[pygame.K_SPACE] and self.runDoubleJump == True and self.jumps == 1 and self.direction.y > 0):
             self.direction.y = self.jumpSpeed
+            self.jumps += 1
 
     def applyGravity(self):
         # Gravity is applied to the direction of the player
@@ -72,19 +75,23 @@ class Player(pygame.sprite.Sprite, Animation):
             self.image = pygame.transform.flip(self.image, True, False)
             self.image.set_colorkey('black')
 
-    def Invincible(self):
-        if self.isInvincible:
-            if self.time - self.startTime > 5000:
-                self.isInvincible = False
-        print(f'time:{self.time}, startTime{self.startTime}')
+    def applyPowerUp(self):
+        for powerUp in [self.isInvincible, self.runDoubleJump]:
+            if powerUp:
+                if self.time - self.startTime > 10000:
+                    self.isInvincible = False
+                    self.runDoubleJump = False
 
     def powerUp(self):
-        powerUpNum = random.randint(1, 1)
+        powerUpNum = random.randint(1, 2)
         if powerUpNum == 1:
             self.startTime = 0
             self.startTime = pygame.time.get_ticks()
             self.isInvincible = True
-            self.Invincible()
+        elif powerUpNum == 2:
+            self.startTime = 0
+            self.startTime = pygame.time.get_ticks()
+            self.runDoubleJump = True
 
     def update(self):
         self.time = pygame.time.get_ticks()
@@ -93,4 +100,6 @@ class Player(pygame.sprite.Sprite, Animation):
             'Assets/Main Characters/Ninja Frog/', self.status, self.animationSteps, 32, 32)
         self.image = self.animation(self.animationSteps)
         self.reverseImage()
-        self.Invincible()
+        self.applyPowerUp()
+        print(
+            f'jumps: {self.jumps}, direction.y: {self.direction.y}, timer {(self.time - self.startTime)}')

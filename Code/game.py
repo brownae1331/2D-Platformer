@@ -11,7 +11,7 @@ class Game():
         self.clock = pygame.time.Clock()
         self.running = True
         self.actions = {"left": False, "right": False,
-                        "space": False, "escape": False}
+                        "space": False, "escape": False, "z": False, "mouse": False}
         self.stateStack = []
         self.loadStates()
 
@@ -35,13 +35,31 @@ class Game():
                     self.actions['space'] = True
                 if event.key == pygame.K_ESCAPE:
                     self.actions['escape'] = True
+                if event.key == pygame.K_z:
+                    self.actions['z'] = True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.actions['mouse'] = True
+
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT:
+                    self.actions['left'] = False
+                if event.key == pygame.K_RIGHT:
+                    self.actions['right'] = False
+                if event.key == pygame.K_SPACE:
+                    self.actions['space'] = False
+                if event.key == pygame.K_ESCAPE:
+                    self.actions['escape'] = False
+                if event.key == pygame.K_z:
+                    self.actions['z'] = False
+            if event.type == pygame.MOUSEBUTTONUP:
+                self.actions['mouse'] = False
 
     def resetKeys(self):
         for i in self.actions:
             self.actions[i] = False
 
     def update(self):
-        self.stateStack[-1].update()
+        self.stateStack[-1].update(self.actions)
 
     def render(self):
         self.stateStack[-1].render(self.display)

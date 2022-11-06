@@ -16,14 +16,14 @@ class DeathScreen(State):
         self.levelsButton = ImageButton(pygame.image.load(
             'Assets/Menu/Buttons/Levels.png'), (800, 600), 64, 64)
 
-    def update(self):
+    def update(self, actions):
         self.mousePos = pygame.mouse.get_pos()
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.restartButton.checkForInput(self.mousePos):
-                    self.exitState()
-                elif self.levelsButton.checkForInput(self.mousePos):
-                    self.exitState()
+        if actions['mouse']:
+            if self.restartButton.checkForInput(self.mousePos):
+                self.exitState()
+            elif self.levelsButton.checkForInput(self.mousePos):
+                self.exitState()
+        self.game.resetKeys()
 
     def render(self, display):
         display.fill('black')

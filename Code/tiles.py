@@ -1,6 +1,7 @@
 # This file holds the Tile class which will be used by the level class to place them
 import pygame
 from animation import Animation
+from settings import screenWidth
 
 
 class Tile(pygame.sprite.Sprite):
@@ -64,3 +65,20 @@ class Checkpoint(StaticTile):
         super().__init__(pos, size, image)
         offset_y = pos[1] + size
         self.rect = self.image.get_rect(bottomleft=(pos[0], offset_y))
+
+
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, pos, direction):
+        super().__init__()
+        self.image = pygame.Surface((25, 5))
+        self.image.fill('#525252')
+        self.rect = self.image.get_rect(center=pos)
+        self.direction = direction
+
+    def update(self, xShift):
+        self.rect.x += xShift
+        self.rect.x += 9 * self.direction
+        if self.rect.x > screenWidth:
+            self.kill()
+        elif self.rect.x < 0:
+            self.kill()

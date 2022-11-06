@@ -20,18 +20,15 @@ class MainMenu(State):
         self.quitButton = ImageButton(pygame.image.load(
             'Assets/Menu/Buttons/Close.png'), (800, 600), 64, 64)
 
-    def update(self):
-        self.buttonPress()
-
-    def buttonPress(self):
+    def update(self, actions):
         self.mousePos = pygame.mouse.get_pos()
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.playButton.checkForInput(self.mousePos):
-                    newState = Level(self.game, level1)
-                    newState.enterState()
-                elif self.quitButton.checkForInput(self.mousePos):
-                    self.game.running = False
+        if actions['mouse']:
+            if self.playButton.checkForInput(self.mousePos):
+                newState = Level(self.game, level1)
+                newState.enterState()
+            elif self.quitButton.checkForInput(self.mousePos):
+                self.game.running = False
+        self.game.resetKeys()
 
     def render(self, display):
         for x in range(25):

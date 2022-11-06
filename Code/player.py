@@ -3,6 +3,7 @@ import pygame
 import random
 from animation import Animation
 from settings import *
+from tiles import Bullet
 
 
 class Player(pygame.sprite.Sprite, Animation):
@@ -10,6 +11,7 @@ class Player(pygame.sprite.Sprite, Animation):
         super().__init__()
         self.game = game
         self.time = pygame.time.get_ticks()
+        self.pos = pos
 
         # Player movement
         self.direction = pygame.math.Vector2(0, 0)
@@ -34,6 +36,7 @@ class Player(pygame.sprite.Sprite, Animation):
         self.isInvincible = False
         self.runDoubleJump = False
         self.jumps = 0
+        self.runBullets = False
 
         self.image = self.animationList[self.frameIndex]
         self.rect = self.image.get_rect(topleft=pos)
@@ -62,9 +65,12 @@ class Player(pygame.sprite.Sprite, Animation):
         if self.direction.y > 0 and self.onGround == False:
             self.status = 'Fall (32x32).png'
             self.animationSteps = 1
-        elif self.direction.y < 0 and self.onGround == False:
+        elif self.direction.y < 0 and self.onGround == False and self.jumps == 1:
             self.status = 'Jump (32x32).png'
             self.animationSteps = 1
+        elif self.direction.y < 0 and self.onGround == False and self.jumps == 2:
+            self.status = 'Double Jump (32x32).png'
+            self.animationSteps = 6
         elif (self.direction.x == 1 or self.direction.x == -1) and self.onGround == True:
             self.status = 'Run (32x32).png'
             self.animationSteps = 12
@@ -84,22 +90,23 @@ class Player(pygame.sprite.Sprite, Animation):
             self.image.set_colorkey('black')
 
     def applyPowerUp(self):
-        for powerUp in [self.isInvincible, self.runDoubleJump]:
+        for powerUp in [self.isInvincible, self.runDoubleJump, self.runBullets]:
             if powerUp:
                 if self.time - self.startTime > 10000:
                     self.isInvincible = False
                     self.runDoubleJump = False
+                    self.runBullets = False
 
     def powerUp(self):
-        powerUpNum = random.randint(1, 2)
+        powerUpNum = random.randint(1, 3)
+        self.startTime = 0
+        self.startTime = pygame.time.get_ticks()
         if powerUpNum == 1:
-            self.startTime = 0
-            self.startTime = pygame.time.get_ticks()
             self.isInvincible = True
         elif powerUpNum == 2:
-            self.startTime = 0
-            self.startTime = pygame.time.get_ticks()
             self.runDoubleJump = True
+        elif powerUpNum == 3:
+            self.runBullets = True
 
     def update(self):
         self.time = pygame.time.get_ticks()
@@ -110,5 +117,3 @@ class Player(pygame.sprite.Sprite, Animation):
         self.image = self.animation(self.animationSteps)
         self.reverseImage()
         self.applyPowerUp()
-        print(
-            f'jumps: {self.jumps}, direction.y: {self.direction.y}, timer {(self.time - self.startTime)}')

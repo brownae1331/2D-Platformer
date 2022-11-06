@@ -7,7 +7,7 @@ class LevelEditor(State):
     def __init__(self, game):
         self.game = game
 
-    def update(self):
+    def update(self, actions):
         pass
 
     def render(self, display):

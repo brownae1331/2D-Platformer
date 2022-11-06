@@ -2,7 +2,7 @@ import pygame
 from States.pausemenu import PauseMenu
 from settings import *
 from player import Player
-from tiles import Tile, StaticTile, Crate, Fruit, Checkpoint
+from tiles import Tile, StaticTile, Crate, Fruit, Checkpoint, Bullet
 from States.state import State
 from enemy import Enemy, Slime
 from States.deathscreen import DeathScreen
@@ -49,10 +49,12 @@ class Level(State):
         self.constrainSprites = self.createTileGroup(
             constraintLayout, 'constraints')
 
+        self.bulletSprites = pygame.sprite.Group()
+
         self.score = 0
         self.startTime = pygame.time.get_ticks()
 
-    def update(self):
+    def update(self, actions):
         self.time = pygame.time.get_ticks()
 
         self.terrainSprites.update(self.worldShift)
@@ -63,12 +65,15 @@ class Level(State):
         self.checkpointSprites.update(self.worldShift)
         self.start.update(self.worldShift)
         self.goal.update(self.worldShift)
+        self.bulletSprites.update(self.worldShift)
 
         self.enemyCollision()
         self.fruitCollision()
         self.playerEnemyCollision()
 
         self.player.update()
+        self.createBullet(actions)
+        self.bulletCollision()
 
         self.hrzCollision()
         self.vrtCollision()
@@ -88,6 +93,7 @@ class Level(State):
         self.start.draw(display)
         self.player.draw(display)
         self.goal.draw(display)
+        self.bulletSprites.draw(display)
 
         self.displayScore(self.score, display)
         self.displayTimer(display)
@@ -252,9 +258,16 @@ class Level(State):
             for enemy in enemyCollisions:
                 if enemy.rect.top < player.rect.bottom < enemy.rect.centery and player.direction.y >= 0:
                     enemy.kill()
+                    self.score += 5
                 else:
                     if player.isInvincible == False:
                         self.killPlayer()
+
+    def bulletCollision(self):
+        for bullet in self.bulletSprites.sprites():
+            if pygame.sprite.spritecollide(bullet, self.enemySprites, True):
+                bullet.kill()
+                self.score += 5
 
     def killPlayer(self):
         self.exitState()
@@ -281,12 +294,22 @@ class Level(State):
     def powerUpTimer(self, display):
         player = self.player.sprite
 
-        if player.isInvincible or player.runDoubleJump:
+        if player.isInvincible or player.runDoubleJump or player.runBullets:
             seconds = (player.time - player.startTime) // 1000
             font = pygame.font.Font('Assets/Fonts/PixelColeco-4vJW.ttf', 30)
-            timerImage = font.render(str(10 - seconds), False, '#D4AF37')
+            timerImage = font.render(str(10 - seconds), False, '#b08f26')
             timerRect = timerImage.get_rect(topright=(screenWidth - 50, 100))
             display.blit(timerImage, timerRect)
+
+    def createBullet(self, actions):
+        player = self.player.sprite
+        if actions['z'] and player.runBullets:
+            if player.direction.x >= 0:
+                self.bulletSprites.add(
+                    Bullet((player.rect.centerx, player.rect.centery), 1))
+            else:
+                self.bulletSprites.add(
+                    Bullet((player.rect.centerx, player.rect.centery), -1))
 
     # This function scroll of the screen when the player get to the edge
     def scrollX(self):

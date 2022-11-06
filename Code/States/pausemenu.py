@@ -21,9 +21,9 @@ class PauseMenu(State):
         self.menuText = self.text.render('Menu', True, 'white')
         self.menuRect = self.menuText.get_rect(center=(screenWidth-135, 50))
 
-    def update(self):
+    def update(self, actions):
         self.buttonPress()
-        if self.game.actions["escape"]:
+        if actions["escape"]:
             self.exitState()
         self.game.resetKeys()
 

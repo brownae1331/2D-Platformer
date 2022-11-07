@@ -52,6 +52,13 @@ class Crate(StaticTile):
         self.rect = self.image.get_rect(bottomleft=(pos[0], offset_y))
 
 
+class Spike(StaticTile):
+    def __init__(self, pos, size, image):
+        super().__init__(pos, size, image)
+        offset_y = pos[1] + size
+        self.rect = self.image.get_rect(topleft=(pos[0], offset_y))
+
+
 class Fruit(AnimatedTile):
     def __init__(self, pos, size, path, steps, width, height):
         super().__init__(pos, size, path, 'None', steps, width, height)

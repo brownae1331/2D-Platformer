@@ -6,7 +6,7 @@ from States.winscreen import WinScreen
 from settings import *
 from player import Player
 from enemy import Enemy, Slime
-from tiles import Tile, StaticTile, Crate, Fruit, Checkpoint, Bullet
+from tiles import Tile, StaticTile, Crate, Fruit, Checkpoint, Bullet, Spike
 
 
 class Level(State):
@@ -22,8 +22,6 @@ class Level(State):
     def setupWorld(self, levelData):
         # checkpoints and player
         checkpointLayout = importCSVLayout(levelData['checkpoints'])
-        self.checkpointSprites = self.createTileGroup(
-            checkpointLayout, 'checkpoints')
         self.start = pygame.sprite.GroupSingle()
         self.player = pygame.sprite.GroupSingle()
         self.goal = pygame.sprite.GroupSingle()
@@ -50,6 +48,11 @@ class Level(State):
         self.constrainSprites = self.createTileGroup(
             constraintLayout, 'constraints')
 
+        # obstacles
+        obstacleLayout = importCSVLayout(levelData['obstacles'])
+        self.obstacleSprites = self.createTileGroup(
+            obstacleLayout, 'obstacles')
+
         self.bulletSprites = pygame.sprite.Group()
 
         self.score = 0
@@ -58,12 +61,12 @@ class Level(State):
     def update(self, actions):
         self.time = pygame.time.get_ticks()
 
+        self.obstacleSprites.update(self.worldShift)
         self.terrainSprites.update(self.worldShift)
         self.crateSprites.update(self.worldShift)
         self.fruitSprites.update(self.worldShift)
         self.enemySprites.update(self.worldShift)
         self.constrainSprites.update(self.worldShift)
-        self.checkpointSprites.update(self.worldShift)
         self.start.update(self.worldShift)
         self.goal.update(self.worldShift)
         self.bulletSprites.update(self.worldShift)
@@ -76,6 +79,7 @@ class Level(State):
         self.createBullet(actions)
         self.bulletCollision()
         self.goalCollision()
+        self.obstacleCollision()
 
         self.hrzCollision()
         self.vrtCollision()
@@ -87,11 +91,11 @@ class Level(State):
 
     def render(self, display):
         display.fill('grey')
+        self.obstacleSprites.draw(display)
         self.terrainSprites.draw(display)
         self.crateSprites.draw(display)
         self.fruitSprites.draw(display)
         self.enemySprites.draw(display)
-        self.checkpointSprites.draw(display)
         self.start.draw(display)
         self.player.draw(display)
         self.goal.draw(display)
@@ -141,12 +145,11 @@ class Level(State):
                     if type == 'constraints':
                         sprite = Tile((x, y), tileSize)
 
-                    if type == 'checkpoints':
-                        if val == '1':
-                            checkpointImage = pygame.image.load(
-                                'Assets/Items/Checkpoints/Checkpoint/Checkpoint (No Flag).png')
-                            sprite = Checkpoint(
-                                (x, y), tileSize, checkpointImage)
+                    if type == 'obstacles':
+                        obstacleImage = pygame.image.load(
+                            'Assets/Traps/Spikes/Idle (64x32).png')
+                        sprite = Spike(
+                            (x, y), 32, obstacleImage)
 
                     spriteGroup.add(sprite)
 
@@ -271,6 +274,12 @@ class Level(State):
                 else:
                     if player.isInvincible == False:
                         self.killPlayer()
+
+    def obstacleCollision(self):
+        player = self.player.sprite
+        if pygame.sprite.spritecollide(player, self.obstacleSprites, False):
+            if player.isInvincible == False:
+                self.killPlayer()
 
     def goalCollision(self):
         player = self.player.sprite

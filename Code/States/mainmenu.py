@@ -1,16 +1,14 @@
 import pygame
 from button import ImageButton
-from settings import *
 from States.state import State
-from States.level import Level
 from States.levelselect import LevelSelect
-from gamedata import level1
 
 
 class MainMenu(State):
     def __init__(self, game):
         self.game = game
-        self.background = pygame.image.load('Assets/Background/Brown.png')
+        self.background = pygame.image.load(
+            'Assets/Background/Brown.png')
         self.text = pygame.font.Font("Assets/Fonts/PixelColeco-4vJW.ttf", 100)
 
         self.menuText = self.text.render('Main Menu', True, '#000000')
@@ -36,10 +34,10 @@ class MainMenu(State):
             for y in range(13):
                 if x / 2 != 0 or x / 2 != 1:
                     display.blit(
-                        self.background, (x * tileSize, y * tileSize))
+                        self.background, (x * 64, y * 64))
                 else:
                     display.blit(pygame.transform.flip(
-                        self.background, False, True), (x * tileSize, y * tileSize))
+                        self.background, False, True), (x * 64, y * 64))
 
         for button in [self.playButton, self.quitButton]:
             button.update(display)

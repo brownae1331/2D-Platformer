@@ -9,3 +9,7 @@ level1 = {
     'checkpoints': 'Levels/1/Level1_checkpoints.csv',
     'constraints': 'Levels/1/Level1_constraints.csv'
 }
+
+levels = {
+    0: level1
+}

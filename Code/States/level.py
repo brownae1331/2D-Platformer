@@ -189,10 +189,18 @@ class Level(State):
 
         for sprite in self.terrainSprites.sprites() + self.crateSprites.sprites() + self.goal.sprites():
             if sprite.rect.colliderect(player.rect):
+                # Moving to the left
                 if player.direction.x < 0:
                     player.rect.left = sprite.rect.right
+                    player.onWall = True
+                # Moving to the right
                 elif player.direction.x > 0:
                     player.rect.right = sprite.rect.left
+                    player.onWall = True
+                else:
+                    player.onWall = False
+            else:
+                player.onWall = False
 
     # This function stops the player from falling thougn the floor
     def vrtCollision(self):

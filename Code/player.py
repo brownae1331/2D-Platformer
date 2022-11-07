@@ -3,7 +3,6 @@ import pygame
 import random
 from animation import Animation
 from settings import *
-from tiles import Bullet
 
 
 class Player(pygame.sprite.Sprite, Animation):

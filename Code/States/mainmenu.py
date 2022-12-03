@@ -12,12 +12,16 @@ class MainMenu(State):
         self.text = pygame.font.Font("Assets/Fonts/PixelColeco-4vJW.ttf", 100)
 
         self.menuText = self.text.render('Main Menu', True, '#000000')
-        self.menuRect = self.menuText.get_rect(center=(800, 200))
+        self.menuRect = self.menuText.get_rect(center=(800, 100))
 
         self.playButton = ImageButton(pygame.image.load(
-            'Assets/Menu/Buttons/Play.png'), (800, 400), 64, 64)
+            'Assets/Menu/Buttons/Play.png'), (550, 400), 64, 64)
+        self.leaderBoardButton = ImageButton(pygame.image.load(
+            'Assets/Menu/Buttons/Leaderboard.png'), (700, 400), 64, 64)
+        self.levelEditorButton = ImageButton(pygame.image.load(
+            'Assets/Menu/Buttons/Leveleditor.png'), (850, 400), 64, 64)
         self.quitButton = ImageButton(pygame.image.load(
-            'Assets/Menu/Buttons/Close.png'), (800, 600), 64, 64)
+            'Assets/Menu/Buttons/Close.png'), (1000, 400), 64, 64)
 
     def update(self, actions):
         self.mousePos = pygame.mouse.get_pos()
@@ -39,7 +43,7 @@ class MainMenu(State):
                     display.blit(pygame.transform.flip(
                         self.background, False, True), (x * 64, y * 64))
 
-        for button in [self.playButton, self.quitButton]:
+        for button in [self.playButton, self.leaderBoardButton, self.levelEditorButton, self.quitButton]:
             button.update(display)
 
         display.blit(self.menuText, self.menuRect)

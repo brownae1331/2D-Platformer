@@ -19,6 +19,7 @@ class LevelEditor(State):
     def render(self, display):
         display.fill('white')
         pygame.draw.circle(display, 'red', self.origin, 10)
+        self.drawGrid(display)
 
     def moveScreen(self, actions):
         # Check middle mouse
@@ -30,3 +31,20 @@ class LevelEditor(State):
         # Move screen
         if self.panActive:
             self.origin = vector(pygame.mouse.get_pos()) - self.panOffset
+
+    def drawGrid(self, display):
+        cols = screenWidth // tileSize
+        rows = screenHeight // tileSize
+
+        # This vector is always close to the left side of the screen to it look like the grid is infinite
+        originOffset = vector(
+            x=self.origin.x - int(self.origin.x / tileSize) * tileSize,
+            y=self.origin.y - int(self.origin.y / tileSize) * tileSize)
+
+        for col in range(cols + 1):
+            x = originOffset.x + col * tileSize
+            pygame.draw.line(display, 'black', (x, 0), (x, screenHeight))
+
+        for row in range(rows + 1):
+            y = originOffset.y + row * tileSize
+            pygame.draw.line(display, 'black', (0, y), (screenWidth, y))

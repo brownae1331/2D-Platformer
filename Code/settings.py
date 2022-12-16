@@ -34,3 +34,8 @@ def import_cut_graphics(path):
             cut_tiles.append(new_surf)
 
     return cut_tiles
+
+
+LevelEditorData = {
+    0: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': ''}
+}

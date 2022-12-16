@@ -2,6 +2,7 @@ import pygame
 from button import ImageButton
 from States.state import State
 from States.levelselect import LevelSelect
+from States.leveleditor import LevelEditor
 
 
 class MainMenu(State):
@@ -25,13 +26,15 @@ class MainMenu(State):
 
     def update(self, actions):
         self.mousePos = pygame.mouse.get_pos()
-        if actions['mouse']:
+        if actions['leftmouse']:
             if self.playButton.checkForInput(self.mousePos):
                 newState = LevelSelect(self.game)
                 newState.enterState()
+            elif self.levelEditorButton.checkForInput(self.mousePos):
+                newState = LevelEditor(self.game)
+                newState.enterState()
             elif self.quitButton.checkForInput(self.mousePos):
                 self.game.running = False
-        self.game.resetKeys()
 
     def render(self, display):
         for x in range(25):

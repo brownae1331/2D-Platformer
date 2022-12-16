@@ -11,7 +11,7 @@ class Game():
         self.clock = pygame.time.Clock()
         self.running = True
         self.actions = {"left": False, "right": False,
-                        "space": False, "escape": False, "z": False, "mouse": False}
+                        "space": False, "escape": False, "z": False, "leftmouse": False, "middlemouse": False, "middlemouseclick": False}
         self.stateStack = []
         self.loadStates()
 
@@ -21,6 +21,7 @@ class Game():
             self.render()
             self.update()
             self.clock.tick(60)
+            self.actions['middlemouseclick'] = False
 
     def checkEvent(self):
         for event in pygame.event.get():
@@ -38,7 +39,13 @@ class Game():
                 if event.key == pygame.K_z:
                     self.actions['z'] = True
             if event.type == pygame.MOUSEBUTTONDOWN:
-                self.actions['mouse'] = True
+                if event.button == 1:
+                    self.actions['leftmouse'] = True
+                if event.button == 2:
+                    self.actions['middlemouse'] = True
+
+                self.actions['middlemouseclick'] = pygame.mouse.get_pressed()[
+                    1]
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
@@ -52,7 +59,10 @@ class Game():
                 if event.key == pygame.K_z:
                     self.actions['z'] = False
             if event.type == pygame.MOUSEBUTTONUP:
-                self.actions['mouse'] = False
+                if event.button == 1:
+                    self.actions['leftmouse'] = False
+                if event.button == 2:
+                    self.actions['middlemouse'] = False
 
     def resetKeys(self):
         for i in self.actions:

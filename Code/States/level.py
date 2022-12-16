@@ -348,7 +348,9 @@ class Level(State):
 
     def createBullet(self, actions):
         player = self.player.sprite
+        print(actions['leftmouse'])
         if actions['z'] and player.runBullets:
+            print('yo')
             if player.direction.x >= 0:
                 self.bulletSprites.add(
                     Bullet((player.rect.centerx, player.rect.centery), 1))

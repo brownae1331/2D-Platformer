@@ -18,7 +18,7 @@ class WinScreen(State):
 
     def update(self, actions):
         self.mousePos = pygame.mouse.get_pos()
-        if actions['mouse']:
+        if actions['leftmouse']:
             if self.nextButton.checkForInput(self.mousePos):
                 self.exitState()
             elif self.levelsButton.checkForInput(self.mousePos):

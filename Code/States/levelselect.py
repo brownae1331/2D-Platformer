@@ -19,7 +19,7 @@ class LevelSelect(State):
 
     def update(self, actions):
         self.mousePos = pygame.mouse.get_pos()
-        if actions['mouse']:
+        if actions['leftmouse']:
             if self.backButton.checkForInput(self.mousePos):
                 self.exitState()
             else:

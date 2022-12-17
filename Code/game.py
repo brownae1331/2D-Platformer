@@ -11,7 +11,7 @@ class Game():
         self.clock = pygame.time.Clock()
         self.running = True
         self.actions = {"left": False, "right": False,
-                        "space": False, "escape": False, "z": False, "leftmouse": False, "middlemouse": False, "middlemouseclick": False}
+                        "space": False, "escape": False, "z": False, "leftmouse": False, "leftmouseclick": False, "middlemouse": False, "middlemouseclick": False, "rightmouseclick": False}
         self.stateStack = []
         self.loadStates()
 
@@ -21,9 +21,12 @@ class Game():
             self.render()
             self.update()
             self.clock.tick(60)
-            self.actions['middlemouseclick'] = False
 
     def checkEvent(self):
+        self.actions['leftmouseclick'] = False
+        self.actions['middlemouseclick'] = False
+        self.actions['rightmouseclick'] = False
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -44,8 +47,10 @@ class Game():
                 if event.button == 2:
                     self.actions['middlemouse'] = True
 
+                self.actions['leftmouseclick'] = pygame.mouse.get_pressed()[0]
                 self.actions['middlemouseclick'] = pygame.mouse.get_pressed()[
                     1]
+                self.actions['rightmouseclick'] = pygame.mouse.get_pressed()[2]
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:

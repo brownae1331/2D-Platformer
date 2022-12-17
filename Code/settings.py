@@ -37,5 +37,19 @@ def import_cut_graphics(path):
 
 
 LevelEditorData = {
-    0: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': ''}
+    0: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Grass Terrain.png'},
+    1: {'style': 'platform', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Platform.png'},
+
+    2: {'style': 'fruit', 'type': 'tile', 'menu': 'fruit', 'path': 'Assets/Level Editor/Apple.png'},
+    3: {'style': 'fruit', 'type': 'tile', 'menu': 'fruit', 'path': 'Assets/Level Editor/Banana.png'},
+    4: {'style': 'fruit', 'type': 'tile', 'menu': 'fruit', 'path': 'Assets/Level Editor/Pineapple.png'},
+
+    5: {'style': 'enemy', 'type': 'tile', 'menu': 'enemy', 'path': 'Assets/Level Editor/Slime.png'},
+    6: {'style': 'enemy', 'type': 'tile', 'menu': 'enemy', 'path': 'Assets/Level Editor/Chicken.png'},
+    7: {'style': 'enemy', 'type': 'tile', 'menu': 'enemy', 'path': 'Assets/Level Editor/Rino.png'},
+
+    8: {'style': 'crate', 'type': 'tile', 'menu': 'crate', 'path': 'Assets/Level Editor/Box1.png'},
+    9: {'style': 'crate', 'type': 'tile', 'menu': 'crate', 'path': 'Assets/Level Editor/Box2.png'},
+    10: {'style': 'crate', 'type': 'tile', 'menu': 'crate', 'path': 'Assets/Level Editor/Box3.png'}
+
 }

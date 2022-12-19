@@ -115,28 +115,33 @@ class LevelEditor(State):
 
             # fruit
             if tile.fruit:
-                surf = pygame.Surface((tileSize, tileSize))
-                surf.fill('red')
-                display.blit(surf, pos)
+                surf = pygame.image.load(LevelEditorData[tile.fruit]['path'])
+                rect = surf.get_rect(
+                    center=(pos[0] + tileSize // 2, pos[1] + tileSize // 2))
+                display.blit(surf, rect)
 
             # enemy
             if tile.enemy:
-                surf = pygame.Surface((tileSize, tileSize))
-                surf.fill('grey')
-                display.blit(surf, pos)
+                surf = pygame.image.load(LevelEditorData[tile.enemy]['path'])
+                rect = surf.get_rect(
+                    midbottom=(pos[0] + tileSize // 2, pos[1] + tileSize))
+                display.blit(surf, rect)
+
+            # crate
+            if tile.crate:
+                surf = pygame.image.load(LevelEditorData[tile.crate]['path'])
+                rect = surf.get_rect(
+                    center=(pos[0] + tileSize // 2, pos[1] + tileSize // 2))
+                display.blit(surf, rect)
 
 
 class CanvasTile:
     def __init__(self, tileId):
 
-        # terrain
         self.terrain = None
-
-        # fruit
         self.fruit = None
-
-        # enemy
         self.enemy = None
+        self.crate = None
 
         # objects
         self.objects = []
@@ -150,3 +155,4 @@ class CanvasTile:
             case 'terrain': self.terrain = tileId
             case 'fruit': self.fruit = tileId
             case 'enemy': self.enemy = tileId
+            case 'crate': self.crate = tileId

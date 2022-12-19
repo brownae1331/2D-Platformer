@@ -37,19 +37,35 @@ def import_cut_graphics(path):
 
 
 LevelEditorData = {
-    0: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Grass Terrain.png'},
-    1: {'style': 'platform', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Platform.png'},
+    0: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Menu/Grass Terrain.png'},
+    1: {'style': 'platform', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Menu/Platform.png'},
 
-    2: {'style': 'fruit', 'type': 'tile', 'menu': 'fruit', 'path': 'Assets/Level Editor/Apple.png'},
-    3: {'style': 'fruit', 'type': 'tile', 'menu': 'fruit', 'path': 'Assets/Level Editor/Banana.png'},
-    4: {'style': 'fruit', 'type': 'tile', 'menu': 'fruit', 'path': 'Assets/Level Editor/Pineapple.png'},
+    2: {'style': 'fruit', 'type': 'tile', 'menu': 'fruit', 'path': 'Assets/Level Editor/Menu/Apple.png'},
+    3: {'style': 'fruit', 'type': 'tile', 'menu': 'fruit', 'path': 'Assets/Level Editor/Menu/Banana.png'},
+    4: {'style': 'fruit', 'type': 'tile', 'menu': 'fruit', 'path': 'Assets/Level Editor/Menu/Pineapple.png'},
 
-    5: {'style': 'enemy', 'type': 'tile', 'menu': 'enemy', 'path': 'Assets/Level Editor/Slime.png'},
-    6: {'style': 'enemy', 'type': 'tile', 'menu': 'enemy', 'path': 'Assets/Level Editor/Chicken.png'},
-    7: {'style': 'enemy', 'type': 'tile', 'menu': 'enemy', 'path': 'Assets/Level Editor/Rino.png'},
+    5: {'style': 'enemy', 'type': 'tile', 'menu': 'enemy', 'path': 'Assets/Level Editor/Menu/Slime.png'},
+    6: {'style': 'enemy', 'type': 'tile', 'menu': 'enemy', 'path': 'Assets/Level Editor/Menu/Chicken.png'},
+    7: {'style': 'enemy', 'type': 'tile', 'menu': 'enemy', 'path': 'Assets/Level Editor/Menu/Rino.png'},
 
-    8: {'style': 'crate', 'type': 'tile', 'menu': 'crate', 'path': 'Assets/Level Editor/Box1.png'},
-    9: {'style': 'crate', 'type': 'tile', 'menu': 'crate', 'path': 'Assets/Level Editor/Box2.png'},
-    10: {'style': 'crate', 'type': 'tile', 'menu': 'crate', 'path': 'Assets/Level Editor/Box3.png'}
+    8: {'style': 'crate', 'type': 'tile', 'menu': 'crate', 'path': 'Assets/Level Editor/Menu/Box1.png'},
+    9: {'style': 'crate', 'type': 'tile', 'menu': 'crate', 'path': 'Assets/Level Editor/Menu/Box2.png'},
+    10: {'style': 'crate', 'type': 'tile', 'menu': 'crate', 'path': 'Assets/Level Editor/Menu/Box3.png'}
 
+}
+
+terrainTiles = {
+    'BL': pygame.image.load('Assets/Level Editor/Terrain/BL.png'),
+    'BM': pygame.image.load('Assets/Level Editor/Terrain/BM.png'),
+    'BR': pygame.image.load('Assets/Level Editor/Terrain/BR.png'),
+    'M': pygame.image.load('Assets/Level Editor/Terrain/M.png'),
+    'ML': pygame.image.load('Assets/Level Editor/Terrain/ML.png'),
+    'MR': pygame.image.load('Assets/Level Editor/Terrain/MR.png'),
+    'TL': pygame.image.load('Assets/Level Editor/Terrain/TL.png'),
+    'TM': pygame.image.load('Assets/Level Editor/Terrain/TM.png'),
+    'TR': pygame.image.load('Assets/Level Editor/Terrain/TR.png'),
+    'XBL': pygame.image.load('Assets/Level Editor/Terrain/XBL.png'),
+    'XBR': pygame.image.load('Assets/Level Editor/Terrain/XBR.png'),
+    'XTL': pygame.image.load('Assets/Level Editor/Terrain/XTL.png'),
+    'XTR': pygame.image.load('Assets/Level Editor/Terrain/XTR.png')
 }

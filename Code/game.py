@@ -11,7 +11,7 @@ class Game():
         self.clock = pygame.time.Clock()
         self.running = True
         self.actions = {"left": False, "right": False,
-                        "space": False, "escape": False, "z": False, "leftmouse": False, "leftmouseclick": False, "middlemouse": False, "middlemouseclick": False, "rightmouseclick": False}
+                        "space": False, "escape": False, "z": False, "leftmouse": False, "leftmouseclick": False, "middlemouse": False, "middlemouseclick": False, "rightmouseclick": False, "rightmouse": False}
         self.stateStack = []
         self.loadStates()
 
@@ -46,6 +46,8 @@ class Game():
                     self.actions['leftmouse'] = True
                 if event.button == 2:
                     self.actions['middlemouse'] = True
+                if event.button == 3:
+                    self.actions['rightmouse'] = True
 
                 self.actions['leftmouseclick'] = pygame.mouse.get_pressed()[0]
                 self.actions['middlemouseclick'] = pygame.mouse.get_pressed()[
@@ -68,6 +70,8 @@ class Game():
                     self.actions['leftmouse'] = False
                 if event.button == 2:
                     self.actions['middlemouse'] = False
+                if event.button == 3:
+                    self.actions['rightmouse'] = False
 
     def resetKeys(self):
         for i in self.actions:

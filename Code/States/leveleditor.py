@@ -27,6 +27,7 @@ class LevelEditor(State):
         self.moveScreen(actions)
         self.menuClick(actions)
         self.screenClick(actions)
+        self.removeTile(actions)
 
     def render(self, display):
         display.fill('white')
@@ -134,6 +135,15 @@ class LevelEditor(State):
                     center=(pos[0] + tileSize // 2, pos[1] + tileSize // 2))
                 display.blit(surf, rect)
 
+    def removeTile(self, actions):
+        if actions['rightmouse'] and not self.menu.rect.collidepoint(pygame.mouse.get_pos()):
+            if self.canvasData:
+                currentCell = self.getCurrentCell()
+                if currentCell in self.canvasData:
+                    self.canvasData[currentCell].removeId(self.selectionIndex)
+                    if self.canvasData[currentCell].isEmpty:
+                        del self.canvasData[currentCell]
+
 
 class CanvasTile:
     def __init__(self, tileId):
@@ -147,6 +157,7 @@ class CanvasTile:
         self.objects = []
 
         self.addId(tileId)
+        self.isEmpty = False
 
     def addId(self, tileId):
         options = {key: value['style']
@@ -156,3 +167,16 @@ class CanvasTile:
             case 'fruit': self.fruit = tileId
             case 'enemy': self.enemy = tileId
             case 'crate': self.crate = tileId
+
+    def removeId(self, tileId):
+        options = {key: value['style']
+                   for key, value in LevelEditorData.items()}
+        match options[tileId]:
+            case 'terrain': self.terrain = None
+            case 'fruit': self.fruit = None
+            case 'enemy': self.enemy = None
+            case 'crate': self.crate = None
+
+    def checkContent(self):
+        if not self.terrain and not self.fruit and not self.enemy and not self.crate:
+            self.isEmpty = True

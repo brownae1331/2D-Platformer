@@ -25,7 +25,6 @@ class LevelEditor(State):
 
     def update(self, actions):
         self.moveScreen(actions)
-        self.selectionHotkeys(actions)
         self.menuClick(actions)
         self.screenClick(actions)
 
@@ -47,16 +46,16 @@ class LevelEditor(State):
         if self.panActive:
             self.origin = vector(pygame.mouse.get_pos()) - self.panOffset
 
-    def selectionHotkeys(self, actions):
-        if actions['right']:
-            self.selectionIndex += 1
-        if actions['left']:
-            self. selectionIndex -= 1
-        self.selectionIndex = max(0, min(self.selectionIndex, 10))
-
     def menuClick(self, actions):
         if actions['rightmouseclick'] and self.menu.rect.collidepoint(pygame.mouse.get_pos()):
-            self.selectionIndex = self.menu.click(pygame.mouse.get_pos())
+            self.selectionIndex = self.menu.click(
+                pygame.mouse.get_pos(), 'right')
+        elif actions['middlemouseclick'] and self.menu.rect.collidepoint(pygame.mouse.get_pos()):
+            self.selectionIndex = self.menu.click(
+                pygame.mouse.get_pos(), 'middle')
+        elif actions['leftmouseclick'] and self.menu.rect.collidepoint(pygame.mouse.get_pos()):
+            self.selectionIndex = self.menu.click(
+                pygame.mouse.get_pos(), 'left')
 
     def screenClick(self, actions):
         if actions['leftmouse'] and not self.menu.rect.collidepoint(pygame.mouse.get_pos()):
@@ -109,14 +108,9 @@ class LevelEditor(State):
             pos = self.origin + pygame.math.Vector2(cellPos) * tileSize
 
             # terrain
-            if tile.hasTerrain:
-                surf = terrainTiles['TM']
-                display.blit(surf, pos)
-
-            # platform
-            if tile.hasPlatform:
-                surf = pygame.Surface((tileSize, tileSize))
-                surf.fill('brown')
+            if tile.terrain or tile.terrain == 0:
+                surf = pygame.image.load(
+                    LevelEditorData[tile.terrain]['path'])
                 display.blit(surf, pos)
 
             # fruit
@@ -136,12 +130,7 @@ class CanvasTile:
     def __init__(self, tileId):
 
         # terrain
-        self.hasTerrain = False
-        self.terrainNeighbors = []
-
-        # platform
-        self.hasPlatform = False
-        self.platformNeighbors = []
+        self.terrain = None
 
         # fruit
         self.fruit = None
@@ -158,7 +147,6 @@ class CanvasTile:
         options = {key: value['style']
                    for key, value in LevelEditorData.items()}
         match options[tileId]:
-            case 'terrain': self.hasTerrain = True
-            case 'platform': self.hasPlatform = True
+            case 'terrain': self.terrain = tileId
             case 'fruit': self.fruit = tileId
             case 'enemy': self.enemy = tileId

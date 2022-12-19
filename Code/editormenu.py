@@ -43,15 +43,22 @@ class EditorMenu:
         # Create the Buttons
         self.buttons = pygame.sprite.Group()
         MenuButton(self.tileButtonRect, self.buttons,
-                   self.menuSurfs['terrain'])
+                   self.menuSurfs['terrain'], self.menuSurfs['platform'])
         MenuButton(self.fruitButtonRect, self.buttons, self.menuSurfs['fruit'])
         MenuButton(self.crateButtonRect, self.buttons, self.menuSurfs['crate'])
         MenuButton(self.enemyButtonRect, self.buttons, self.menuSurfs['enemy'])
 
-    def click(self, pos):
+    def click(self, pos, button):
         for sprite in self.buttons:
             if sprite.rect.collidepoint(pos):
-                sprite.switch()
+                if button == 'middle':
+                    if sprite.items['alt']:
+                        sprite.index = 0
+                        sprite.mainActive = not sprite.mainActive
+                if button == 'right':
+                    sprite.switch()
+                if button == 'left':
+                    pass
                 return sprite.getId()
 
     def highlight(self, index, display):
@@ -70,24 +77,26 @@ class EditorMenu:
 
 
 class MenuButton(pygame.sprite.Sprite):
-    def __init__(self, rect, group, items):
+    def __init__(self, rect, group, items, itemsAlt=None):
         super().__init__(group)
         self.image = pygame.Surface(rect.size)
         self.rect = rect
 
-        self.items = items
+        self.items = {'main': items, 'alt': itemsAlt}
         self.index = 0
+        self.mainActive = True
 
     def getId(self):
-        return self.items[self.index][0]
+        return self.items['main' if self.mainActive else 'alt'][self.index][0]
 
     def switch(self):
         self.index += 1
-        self.index = 0 if self.index >= len(self.items) else self.index
+        self.index = 0 if self.index >= len(
+            self.items['main' if self.mainActive else 'alt']) else self.index
 
     def update(self):
         self.image.fill('#33323d')
-        surf = self.items[self.index][1]
+        surf = self.items['main' if self.mainActive else 'alt'][self.index][1]
 
         rect = surf.get_rect(
             center=(self.rect.width / 2, self.rect.height / 2))

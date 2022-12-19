@@ -26,7 +26,7 @@ class MainMenu(State):
 
     def update(self, actions):
         self.mousePos = pygame.mouse.get_pos()
-        if actions['leftmouse']:
+        if actions['leftmouseclick']:
             if self.playButton.checkForInput(self.mousePos):
                 newState = LevelSelect(self.game)
                 newState.enterState()

@@ -23,11 +23,15 @@ class LevelEditor(State):
         # menu
         self.menu = EditorMenu()
 
+        # save level
+        self.level = 1
+
     def update(self, actions):
         self.moveScreen(actions)
         self.menuClick(actions)
         self.screenClick(actions)
         self.removeTile(actions)
+        self.createCVSMap(actions)
 
     def render(self, display):
         display.fill('white')
@@ -67,7 +71,7 @@ class LevelEditor(State):
                     self.canvasData[currentCell].addId(self.selectionIndex)
                 else:
                     self.canvasData[currentCell] = CanvasTile(
-                        self.selectionIndex)
+                        self.selectionIndex, LevelEditorData[self.selectionIndex]['csv'])
                 self.lastSelectedCell = currentCell
 
     def getCurrentCell(self):
@@ -135,6 +139,14 @@ class LevelEditor(State):
                     center=(pos[0] + tileSize // 2, pos[1] + tileSize // 2))
                 display.blit(surf, rect)
 
+            # obstacle
+            if tile.obstacle:
+                surf = pygame.image.load(
+                    LevelEditorData[tile.obstacle]['path'])
+                rect = surf.get_rect(
+                    midbottom=(pos[0] + tileSize // 2, pos[1] + tileSize))
+                display.blit(surf, rect)
+
     def removeTile(self, actions):
         if actions['rightmouse'] and not self.menu.rect.collidepoint(pygame.mouse.get_pos()):
             if self.canvasData:
@@ -144,14 +156,66 @@ class LevelEditor(State):
                     if self.canvasData[currentCell].isEmpty:
                         del self.canvasData[currentCell]
 
+    def createCVSMap(self, actions):
+        if actions['enter']:
+            # This is the x coordinate of a cell that is the most to the left or right
+            left = sorted(self.canvasData.keys(),
+                          key=lambda tile: tile[0])[0][0]
+            right = sorted(self.canvasData.keys(),
+                           key=lambda tile: tile[0])[len(self.canvasData)-1][0]
+            # This is the y coordinate of a cell that is the highest or lowest
+            top = sorted(self.canvasData.keys(),
+                         key=lambda tile: tile[1])[0][1]
+            bottom = sorted(self.canvasData.keys(), key=lambda tile: tile[1])[
+                len(self.canvasData)-1][1]
+
+            cols = right - left + 1
+            rows = bottom - top + 1
+
+            layers = {
+                'crates': [],
+                'enemies': [],
+                'fruits': [],
+                'obstacles': [],
+                'terrain': []
+            }
+
+            # create the empty lists
+            for key in layers.keys():
+                for row in range(rows):
+                    r = [-1] * cols
+                    layers[key].append(r)
+
+            # fill lists
+            for tilePos, tile in self.canvasData.items():
+                x = tilePos[0] - left
+                y = tilePos[1] - top
+                if tile.crate:
+                    layers['crates'][y][x] = tile.csv
+                if tile.enemy:
+                    layers['enemies'][y][x] = tile.csv
+                if tile.fruit:
+                    layers['fruits'][y][x] = tile.csv
+                if tile.obstacle:
+                    layers['obstacles'][y][x] = tile.csv
+                if tile.terrain:
+                    layers['terrain'][y][x] = tile.csv
+
+            # create files
+            for key, value in layers.items():
+                exportCVSLayout(key, value, self.level)
+
 
 class CanvasTile:
-    def __init__(self, tileId):
+    def __init__(self, tileId, csv):
 
         self.terrain = None
         self.fruit = None
         self.enemy = None
         self.crate = None
+        self.obstacle = None
+
+        self.csv = csv
 
         # objects
         self.objects = []
@@ -167,6 +231,7 @@ class CanvasTile:
             case 'fruit': self.fruit = tileId
             case 'enemy': self.enemy = tileId
             case 'crate': self.crate = tileId
+            case 'obstacle': self.obstacle = tileId
 
     def removeId(self, tileId):
         options = {key: value['style']
@@ -176,7 +241,9 @@ class CanvasTile:
             case 'fruit': self.fruit = None
             case 'enemy': self.enemy = None
             case 'crate': self.crate = None
+            case 'obstacle': self.obstacle = None
+        self.checkContent()
 
     def checkContent(self):
-        if not self.terrain and not self.fruit and not self.enemy and not self.crate:
+        if not self.terrain and not self.fruit and not self.enemy and not self.crate and not self.obstacle:
             self.isEmpty = True

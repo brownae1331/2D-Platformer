@@ -1,5 +1,5 @@
 # This file hold the variables that will be used in all the files
-from csv import reader
+from csv import reader, writer
 import pygame
 
 screenWidth = 1536
@@ -15,6 +15,13 @@ def importCSVLayout(path):
         for row in level:
             terrainMap.append(list(row))
         return terrainMap
+
+
+def exportCVSLayout(layer, layout, level):
+    with open(f'Level{level}_{layer}.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',')
+        for row in layout:
+            writer.writerow(row)
 
 
 def import_cut_graphics(path):
@@ -37,39 +44,39 @@ def import_cut_graphics(path):
 
 
 LevelEditorData = {
-    0: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/TL.png'},
-    1: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/TM.png'},
-    2: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/TR.png'},
-    3: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/ML.png'},
-    4: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/M.png'},
-    5: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/MR.png'},
-    6: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/BL.png'},
-    7: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/BM.png'},
-    8: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/BR.png'},
-    9: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/XBL.png'},
-    10: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/XBR.png'},
-    11: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/XTL.png'},
-    12: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/XTR.png'},
+    0: {'style': 'terrain', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/TL.png', 'csv': 6},
+    1: {'style': 'terrain', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/TM.png', 'csv': 7},
+    2: {'style': 'terrain', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/TR.png', 'csv': 8},
+    3: {'style': 'terrain', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/ML.png', 'csv': 28},
+    4: {'style': 'terrain', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/M.png', 'csv': 29},
+    5: {'style': 'terrain', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/MR.png', 'csv': 30},
+    6: {'style': 'terrain', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/BL.png', 'csv': 50},
+    7: {'style': 'terrain', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/BM.png', 'csv': 51},
+    8: {'style': 'terrain', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/BR.png', 'csv': 52},
+    9: {'style': 'terrain', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/XBL.png', 'csv': 31},
+    10: {'style': 'terrain', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/XBR.png', 'csv': 32},
+    11: {'style': 'terrain', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/XTL.png', 'csv': 9},
+    12: {'style': 'terrain', 'menu': 'terrain', 'path': 'Assets/Level Editor/Terrain/XTR.png', 'csv': 10},
 
-    13: {'style': 'terrain', 'type': 'tile', 'menu': 'platform', 'path': 'Assets/Level Editor/Platform/HL.png'},
-    14: {'style': 'terrain', 'type': 'tile', 'menu': 'platform', 'path': 'Assets/Level Editor/Platform/HM.png'},
-    15: {'style': 'terrain', 'type': 'tile', 'menu': 'platform', 'path': 'Assets/Level Editor/Platform/HR.png'},
-    16: {'style': 'terrain', 'type': 'tile', 'menu': 'platform', 'path': 'Assets/Level Editor/Platform/VB.png'},
-    17: {'style': 'terrain', 'type': 'tile', 'menu': 'platform', 'path': 'Assets/Level Editor/Platform/VM.png'},
-    18: {'style': 'terrain', 'type': 'tile', 'menu': 'platform', 'path': 'Assets/Level Editor/Platform/VT.png'},
-    19: {'style': 'terrain', 'type': 'tile', 'menu': 'platform', 'path': 'Assets/Level Editor/Platform/X.png'},
+    13: {'style': 'terrain', 'menu': 'platform', 'path': 'Assets/Level Editor/Platform/HL.png', 'csv': 12},
+    14: {'style': 'terrain', 'menu': 'platform', 'path': 'Assets/Level Editor/Platform/HM.png', 'csv': 13},
+    15: {'style': 'terrain', 'menu': 'platform', 'path': 'Assets/Level Editor/Platform/HR.png', 'csv': 14},
+    16: {'style': 'terrain', 'menu': 'platform', 'path': 'Assets/Level Editor/Platform/VB.png', 'csv': 59},
+    17: {'style': 'terrain', 'menu': 'platform', 'path': 'Assets/Level Editor/Platform/VM.png', 'csv': 37},
+    18: {'style': 'terrain', 'menu': 'platform', 'path': 'Assets/Level Editor/Platform/VT.png', 'csv': 15},
+    19: {'style': 'terrain', 'menu': 'platform', 'path': 'Assets/Level Editor/Platform/X.png', 'csv': 34},
 
-    20: {'style': 'fruit', 'type': 'tile', 'menu': 'fruit', 'path': 'Assets/Level Editor/Menu/Apple.png'},
-    21: {'style': 'fruit', 'type': 'tile', 'menu': 'fruit', 'path': 'Assets/Level Editor/Menu/Banana.png'},
-    22: {'style': 'fruit', 'type': 'tile', 'menu': 'fruit', 'path': 'Assets/Level Editor/Menu/Pineapple.png'},
+    21: {'style': 'fruit', 'menu': 'fruit', 'path': 'Assets/Level Editor/Menu/Banana.png', 'csv': 0},
+    20: {'style': 'fruit', 'menu': 'fruit', 'path': 'Assets/Level Editor/Menu/Apple.png', 'csv': 1},
+    22: {'style': 'fruit', 'menu': 'fruit', 'path': 'Assets/Level Editor/Menu/Pineapple.png', 'csv': 2},
 
-    23: {'style': 'enemy', 'type': 'tile', 'menu': 'enemy', 'path': 'Assets/Level Editor/Menu/Slime.png'},
-    24: {'style': 'enemy', 'type': 'tile', 'menu': 'enemy', 'path': 'Assets/Level Editor/Menu/Chicken.png'},
-    25: {'style': 'enemy', 'type': 'tile', 'menu': 'enemy', 'path': 'Assets/Level Editor/Menu/Rino.png'},
-    26: {'style': 'enemy', 'type': 'tile', 'menu': 'enemy', 'path': 'Assets/Level Editor/Menu/Spikes.png'},
+    23: {'style': 'enemy', 'menu': 'enemy', 'path': 'Assets/Level Editor/Menu/Slime.png', 'csv': 1},
+    24: {'style': 'enemy', 'menu': 'enemy', 'path': 'Assets/Level Editor/Menu/Chicken.png', 'csv': 0},
+    25: {'style': 'enemy', 'menu': 'enemy', 'path': 'Assets/Level Editor/Menu/Rino.png', 'csv': 2},
+    26: {'style': 'obstacle', 'menu': 'enemy', 'path': 'Assets/Level Editor/Menu/Spikes.png', 'csv': 0},
 
-    27: {'style': 'crate', 'type': 'tile', 'menu': 'crate', 'path': 'Assets/Level Editor/Menu/Box1.png'},
-    28: {'style': 'crate', 'type': 'tile', 'menu': 'crate', 'path': 'Assets/Level Editor/Menu/Box2.png'},
-    29: {'style': 'crate', 'type': 'tile', 'menu': 'crate', 'path': 'Assets/Level Editor/Menu/Box3.png'}
+    27: {'style': 'crate', 'menu': 'crate', 'path': 'Assets/Level Editor/Menu/Box1.png', 'csv': 6},
+    28: {'style': 'crate', 'menu': 'crate', 'path': 'Assets/Level Editor/Menu/Box2.png', 'csv': 6},
+    29: {'style': 'crate', 'menu': 'crate', 'path': 'Assets/Level Editor/Menu/Box3.png', 'csv': 6}
 
 }

@@ -32,13 +32,14 @@ class LevelEditor(State):
         self.screenClick(actions)
         self.removeTile(actions)
         self.createCVSMap(actions)
+        self.changeLevelNum(actions)
 
     def render(self, display):
         display.fill('white')
-        pygame.draw.circle(display, 'red', self.origin, 10)
         self.drawLevel(display)
         self.drawGrid(display)
         self.menu.render(self.selectionIndex, display)
+        self.displayLevelNum(display)
 
     def moveScreen(self, actions):
         # Check middle mouse
@@ -53,14 +54,17 @@ class LevelEditor(State):
 
     def menuClick(self, actions):
         if actions['rightmouseclick'] and self.menu.rect.collidepoint(pygame.mouse.get_pos()):
-            self.selectionIndex = self.menu.click(
+            newIndex = self.menu.click(
                 pygame.mouse.get_pos(), 'right')
+            self.selectionIndex = newIndex if newIndex else self.selectionIndex
         elif actions['middlemouseclick'] and self.menu.rect.collidepoint(pygame.mouse.get_pos()):
-            self.selectionIndex = self.menu.click(
+            newIndex = self.menu.click(
                 pygame.mouse.get_pos(), 'middle')
+            self.selectionIndex = newIndex if newIndex else self.selectionIndex
         elif actions['leftmouseclick'] and self.menu.rect.collidepoint(pygame.mouse.get_pos()):
-            self.selectionIndex = self.menu.click(
+            newIndex = self.menu.click(
                 pygame.mouse.get_pos(), 'left')
+            self.selectionIndex = newIndex if newIndex else self.selectionIndex
 
     def screenClick(self, actions):
         if actions['leftmouse'] and not self.menu.rect.collidepoint(pygame.mouse.get_pos()):
@@ -158,18 +162,18 @@ class LevelEditor(State):
 
     def createCVSMap(self, actions):
         if actions['enter']:
-            # This is the x coordinate of a cell that is the most to the left or right
+            # This is coordinates of a cell that is the most to the left or right
             left = sorted(self.canvasData.keys(),
-                          key=lambda tile: tile[0])[0][0]
+                          key=lambda tile: tile[0])[0]
             right = sorted(self.canvasData.keys(),
-                           key=lambda tile: tile[0])[len(self.canvasData)-1][0]
+                           key=lambda tile: tile[0])[len(self.canvasData)-1]
             # This is the y coordinate of a cell that is the highest or lowest
             top = sorted(self.canvasData.keys(),
                          key=lambda tile: tile[1])[0][1]
             bottom = sorted(self.canvasData.keys(), key=lambda tile: tile[1])[
                 len(self.canvasData)-1][1]
 
-            cols = right - left + 1
+            cols = right[0] - left[0] + 1
             rows = bottom - top + 1
 
             layers = {
@@ -177,7 +181,7 @@ class LevelEditor(State):
                 'enemies': [],
                 'fruits': [],
                 'obstacles': [],
-                'terrain': []
+                'terrain': [],
             }
 
             # create the empty lists
@@ -188,7 +192,7 @@ class LevelEditor(State):
 
             # fill lists
             for tilePos, tile in self.canvasData.items():
-                x = tilePos[0] - left
+                x = tilePos[0] - left[0]
                 y = tilePos[1] - top
                 if tile.crate:
                     layers['crates'][y][x] = tile.csv
@@ -204,6 +208,31 @@ class LevelEditor(State):
             # create files
             for key, value in layers.items():
                 exportCVSLayout(key, value, self.level)
+
+            # add start and end
+            checkpoints = []
+            for row in range(rows):
+                r = [-1] * cols
+                checkpoints.append(r)
+
+            # the object that is furthest to the left
+            checkpoints[left[1]][0] = 0
+            # the object that is furthest to the right
+            checkpoints[top - right[1]][right[0]-left[0]] = 2
+            exportCVSLayout('checkpoints', checkpoints, self.level)
+
+    def displayLevelNum(self, display):
+        font = pygame.font.Font('Assets/Fonts/PixelColeco-4vJW.ttf', 50)
+        image = font.render(str(self.level), False, '#33323d')
+        rect = image.get_rect(topleft=(50, 50))
+        display.blit(image, rect)
+
+    def changeLevelNum(self, actions):
+        if actions['right']:
+            self.level += 1
+        if actions['left']:
+            self.level -= 1
+        self.level = max(1, min(self.level, 30))
 
 
 class CanvasTile:

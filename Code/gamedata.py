@@ -1,6 +1,3 @@
-import csv
-
-
 level1 = {
     'terrain': 'Levels/1/Level1_terrain.csv',
     'crates': 'Levels/1/Level1_crates.csv',

@@ -26,15 +26,13 @@ class Game():
         self.actions['leftmouseclick'] = False
         self.actions['middlemouseclick'] = False
         self.actions['rightmouseclick'] = False
+        self.actions['left'] = False
+        self.actions['right'] = False
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    self.actions['left'] = True
-                if event.key == pygame.K_RIGHT:
-                    self.actions['right'] = True
                 if event.key == pygame.K_SPACE:
                     self.actions['space'] = True
                 if event.key == pygame.K_ESCAPE:
@@ -58,9 +56,9 @@ class Game():
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
-                    self.actions['left'] = False
+                    self.actions['left'] = True
                 if event.key == pygame.K_RIGHT:
-                    self.actions['right'] = False
+                    self.actions['right'] = True
                 if event.key == pygame.K_SPACE:
                     self.actions['space'] = False
                 if event.key == pygame.K_ESCAPE:

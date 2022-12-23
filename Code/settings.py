@@ -1,5 +1,5 @@
 # This file hold the variables that will be used in all the files
-from csv import reader, writer
+import csv
 import pygame
 
 screenWidth = 1536
@@ -11,14 +11,14 @@ tileSize = 64  # The size of the tiles
 def importCSVLayout(path):
     terrainMap = []
     with open(path) as map:
-        level = reader(map, delimiter=',')
+        level = csv.reader(map, delimiter=',')
         for row in level:
             terrainMap.append(list(row))
         return terrainMap
 
 
 def exportCVSLayout(layer, layout, level):
-    with open(f'Level{level}_{layer}.csv', 'w', newline='') as csvfile:
+    with open(f'CustomLevels/{level}/Level{level}_{layer}.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',')
         for row in layout:
             writer.writerow(row)

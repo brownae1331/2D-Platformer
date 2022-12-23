@@ -17,7 +17,7 @@ def importCSVLayout(path):
         return terrainMap
 
 
-def exportCVSLayout(layer, layout, level):
+def exportCSVLayout(layer, layout, level):
     with open(f'CustomLevels/{level}/Level{level}_{layer}.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',')
         for row in layout:

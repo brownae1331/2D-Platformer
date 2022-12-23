@@ -190,6 +190,12 @@ class LevelEditor(State):
                     r = [-1] * cols
                     layers[key].append(r)
 
+            # Add constraints
+            constraints = []
+            for row in range(rows):
+                r = [-1] * (cols+1)
+                constraints.append(r)
+
             # fill lists
             for tilePos, tile in self.canvasData.items():
                 x = tilePos[0] - left[0]
@@ -204,10 +210,19 @@ class LevelEditor(State):
                     layers['obstacles'][y][x] = tile.csv
                 if tile.terrain:
                     layers['terrain'][y][x] = tile.csv
+                    if tile.csv == 6:
+                        constraints[y-1][x-1] = 3
+                    elif tile.csv == 8:
+                        constraints[y-1][x+1] = 3
+                    elif tile.csv == 28 or tile.csv == 30:
+                        constraints[y][x] = 3
+
+            # export contrainsts file
+            exportCSVLayout('constraints', constraints, self.level)
 
             # create files
             for key, value in layers.items():
-                exportCVSLayout(key, value, self.level)
+                exportCSVLayout(key, value, self.level)
 
             # add start and end
             checkpoints = []
@@ -219,7 +234,7 @@ class LevelEditor(State):
             checkpoints[left[1]][0] = 0
             # the object that is furthest to the right
             checkpoints[top - right[1]][right[0]-left[0]] = 2
-            exportCVSLayout('checkpoints', checkpoints, self.level)
+            exportCSVLayout('checkpoints', checkpoints, self.level)
 
     def displayLevelNum(self, display):
         font = pygame.font.Font('Assets/Fonts/PixelColeco-4vJW.ttf', 50)

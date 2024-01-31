@@ -11,7 +11,11 @@ class Game():
         self.clock = pygame.time.Clock()
         self.running = True
         self.actions = {"left": False, "right": False,
-                        "space": False, "escape": False, "enter": False, "z": False, "leftmouse": False, "leftmouseclick": False, "middlemouse": False, "middlemouseclick": False, "rightmouseclick": False, "rightmouse": False}
+                        "space": False, "escape": False,
+                        "enter": False, "z": False, "leftmouse": False,
+                        "leftmouseclick": False, "middlemouse": False,
+                        "middlemouseclick": False, "rightmouseclick": False, "rightmouse": False
+                        }
         self.stateStack = []
         self.loadStates()
 

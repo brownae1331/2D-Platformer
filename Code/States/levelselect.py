@@ -3,7 +3,7 @@ from button import ImageButton
 from States.state import State
 from States.level import Level
 from gamedata import *
-from settings import screenWidth, screenHeight
+from settings import screenWidth
 
 
 class LevelSelect(State):
@@ -20,19 +20,15 @@ class LevelSelect(State):
             self.levelButtons.append(ImageButton(
                 pygame.image.load('Assets/Menu/Levels/' + str(i + 1) + '.png'), ((i % 6) * 100 + 500, (i // 6) * 100 + 150), 64, 64))
 
+        self.previousLevel = 0
+
     def update(self, actions):
         self.mousePos = pygame.mouse.get_pos()
         if actions['leftmouseclick']:
             if self.backButton.checkForInput(self.mousePos):
                 self.exitState()
-            if self.switchButton.checkForInput(self.mousePos):
-                newState = CustomLevelSelect(self.game)
-                newState.enterState()
             else:
                 self.enterLevel()
-
-        elif actions['escape']:
-            self.exitState()
 
     def render(self, display):
         for x in range(25):
@@ -47,8 +43,13 @@ class LevelSelect(State):
     def enterLevel(self):
         for i in range(30):
             if self.levelButtons[i].checkForInput(self.mousePos):
+                self.previousLevel = i
                 newState = Level(self.game, levels[i])
                 newState.enterState()
+
+    def restartLevel(self):
+        newState = Level(self.game, levels[self.previousLevel])
+        newState.enterState()
 
 
 class CustomLevelSelect(State):

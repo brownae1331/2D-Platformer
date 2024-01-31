@@ -33,6 +33,7 @@ class MainMenu(State):
             elif self.levelEditorButton.checkForInput(self.mousePos):
                 newState = LevelEditor(self.game)
                 newState.enterState()
+                newState.enterState()
             elif self.quitButton.checkForInput(self.mousePos):
                 self.game.running = False
 

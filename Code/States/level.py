@@ -1,6 +1,4 @@
 import pygame
-from States.state import State
-from States.pausemenu import PauseMenu
 from States.deathscreen import DeathScreen
 from States.winscreen import WinScreen
 from settings import *
@@ -279,7 +277,9 @@ class Level(State):
         player = self.player.sprite
         if pygame.sprite.spritecollide(player, self.obstacleSprites, False):
             if player.isInvincible == False:
-                self.killPlayer()
+                self.exitState()
+                newState = DeathScreen(self.game)
+                newState.enterState()
 
     def goalCollision(self):
         player = self.player.sprite
@@ -307,12 +307,12 @@ class Level(State):
 
     def displayTimer(self, display):
         self.gameTime = self.time - self.startTime
-        seconds = int((self.gameTime // 1000) % 60)
+        seconds = int(self.gameTime // 1000)
         minutes = int(seconds // 60)
 
         font = pygame.font.Font('Assets/Fonts/PixelColeco-4vJW.ttf', 30)
         timerImage = font.render((str(minutes) + ':' + str(
-            seconds)), False, '#33323d')
+            seconds % 60)), False, '#33323d')
         timerRect = timerImage.get_rect(topright=(screenWidth - 50, 61))
         display.blit(timerImage, timerRect)
 
@@ -348,9 +348,7 @@ class Level(State):
 
     def createBullet(self, actions):
         player = self.player.sprite
-        print(actions['leftmouse'])
         if actions['z'] and player.runBullets:
-            print('yo')
             if player.direction.x >= 0:
                 self.bulletSprites.add(
                     Bullet((player.rect.centerx, player.rect.centery), 1))

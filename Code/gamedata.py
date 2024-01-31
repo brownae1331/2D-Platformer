@@ -37,3 +37,8 @@ cLevel1 = {
 customLevels = {
     0: cLevel1
 }
+
+fastestTime = {}
+for i in range(30):
+    exec(f'fstTime{i} = 0')
+    exec(f'fastestTime{i} = fstTime{i}')
